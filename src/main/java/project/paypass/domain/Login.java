@@ -2,21 +2,23 @@ package project.paypass.domain;
 
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
-public class login {
+public class Login {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String main_id;
+    private String mainId;
 
     @Column(nullable = false)
     private String password;
 
-    public login(String main_id, String password) {
-        this.main_id = main_id;
+    public Login(String mainId, String password) {
+        this.mainId = mainId;
         this.password = password;
     }
 }
