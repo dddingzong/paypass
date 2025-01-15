@@ -1,17 +1,19 @@
 package project.paypass.domain;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
-public class user {
+public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String main_id;
+    private String mainId;
 
     @Column(nullable = false)
     private String name;
@@ -22,8 +24,8 @@ public class user {
     @Column(nullable = false)
     private String phoneNumber;
 
-    public user(String main_id, String name, LocalDateTime birth, String phoneNumber) {
-        this.main_id = main_id;
+    public User(String mainId, String name, LocalDateTime birth, String phoneNumber) {
+        this.mainId = mainId;
         this.name = name;
         this.birth = birth;
         this.phoneNumber = phoneNumber;
