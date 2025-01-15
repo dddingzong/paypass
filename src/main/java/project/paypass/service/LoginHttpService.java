@@ -24,9 +24,6 @@ public class LoginHttpService {
 
     @Transactional
     public void saveNewUser(UserInfoDto userInfoDto){
-        // userInfo 처리해야함
-        System.out.println("userInfo = " + userInfoDto);
-
         String mainId = userInfoDto.getMainId();
         String name = userInfoDto.getName();
         String phoneNumber = userInfoDto.getPhoneNumber();
