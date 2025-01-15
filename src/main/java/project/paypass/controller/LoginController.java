@@ -34,8 +34,6 @@ public class LoginController {
 
         if (!checkNewUser) {
             response.put("status", "EXISTING_USER");
-            // 기존 유저일 경우 해당 위치에서 mainId 세션에 저장
-
         }
         return ResponseEntity.ok(response);
     }
@@ -43,8 +41,6 @@ public class LoginController {
     @PostMapping("/new-user")
     public ResponseEntity<Void> registerNewUser(@RequestBody UserInfoDto userInfoDto){
         loginHttpService.saveNewUser(userInfoDto);
-        // 신규 유저일 경우 해당 위치에서 mainId 세션에 저장
-
         return ResponseEntity.ok().build();
     }
 
