@@ -16,4 +16,8 @@ public class Station {
     private String name;
 
     private Long stationNumber;
+
+    private double longitude;
+
+    private double latitude;
 }
