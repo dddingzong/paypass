@@ -1,17 +1,19 @@
 package project.paypass.domain;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
-public class geofenceLocation {
+public class GeofenceLocation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String main_id;
+    private String mainId;
 
     @Column(nullable = false)
     private LocalDateTime fenceInTime;
@@ -25,8 +27,8 @@ public class geofenceLocation {
     @Column(nullable = false)
     private boolean board;
 
-    public geofenceLocation(String main_id, Long stationNumber) {
-        this.main_id = main_id;
+    public GeofenceLocation(String main_id, Long stationNumber) {
+        this.mainId = mainId;
         this.fenceInTime = LocalDateTime.now();
         this.fenceOutTime = LocalDateTime.of(2000, 1, 1, 0, 0);
         this.stationNumber = stationNumber;
