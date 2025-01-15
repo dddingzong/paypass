@@ -1,16 +1,19 @@
 package project.paypass.domain;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
-public class userLocation {
+public class UserLocation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
-    private String main_id;
+    private String mainId;
 
     @Column(nullable = false)
     private double longitude;
@@ -19,12 +22,12 @@ public class userLocation {
     private double latitude;
 
     @Column(nullable = false)
-    private LocalDateTime currentTime;
+    private LocalDateTime time;
 
-    public userLocation(String main_id, double longitude, double latitude) {
-        this.main_id = main_id;
+    public UserLocation(String mainId, double longitude, double latitude) {
+        this.mainId = mainId;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.currentTime = LocalDateTime.now();
+        this.time = LocalDateTime.now();
     }
 }
