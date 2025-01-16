@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import project.paypass.domain.User;
 import project.paypass.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,4 +24,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public User findById(Long id){
+        return userRepository.findById(id).get();
+    }
+
+    @Transactional
+    public Long findIdByMainId(String mainId){
+        return userRepository.findByMainId(mainId).get(0).getId();
+    }
 }
