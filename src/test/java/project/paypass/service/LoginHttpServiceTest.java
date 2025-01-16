@@ -1,6 +1,5 @@
 package project.paypass.service;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -53,14 +52,15 @@ class LoginHttpServiceTest {
     @Transactional
     void saveNewUser() {
         // given
-        Long id = 1L;
         String mainId = "test@email.com";
         UserInfoDto userInfoDto = new UserInfoDto(mainId, "hi", "2000-01-01", "01089099721");
         // when
         loginHttpService.saveNewUser(userInfoDto);
+        Long userId = userService.findIdByMainId(mainId);
+        Long walletId = walletService.findIdByMainId(mainId);
         // then
-        Assertions.assertThat(userService.findById(id).getMainId()).isEqualTo(mainId);
-        Assertions.assertThat(walletService.findById(id).getMainId()).isEqualTo(mainId);
+        Assertions.assertThat(userService.findById(userId).getMainId()).isEqualTo(mainId);
+        Assertions.assertThat(walletService.findById(walletId).getMainId()).isEqualTo(mainId);
     }
 
     private void saveOneUser(){
