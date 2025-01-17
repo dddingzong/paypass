@@ -28,7 +28,7 @@ public class Log {
     private Long arrivalStation;
 
     @Column(nullable = false)
-    boolean payCheck;
+    PayCheck payCheck;
 
     public Log(String mainId, LocalDateTime departureTime, LocalDateTime arrivalTime, Long departureStation, Long arrivalStation) {
         this.mainId = mainId;
@@ -36,6 +36,6 @@ public class Log {
         this.arrivalTime = arrivalTime;
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
-        this.payCheck = false;
+        this.payCheck = PayCheck.False;
     }
 }
