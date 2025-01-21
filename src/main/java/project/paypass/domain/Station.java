@@ -22,4 +22,6 @@ public class Station {
     private double longitude;
 
     private double latitude;
+
+    private int sequence;
 }
