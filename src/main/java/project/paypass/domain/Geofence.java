@@ -13,5 +13,7 @@ public class Geofence {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long center;
+    private Long longitude;
+
+    private Long latitude;
 }
