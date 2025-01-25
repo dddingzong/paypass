@@ -17,6 +17,8 @@ public class Bus {
 
     private String busNumber;
 
+    private Long routeId;
+
     private int price;
 
     private ArrayList<String> stops;
