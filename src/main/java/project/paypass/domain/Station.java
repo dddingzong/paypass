@@ -22,4 +22,6 @@ public class Station {
     private double longitude;
 
     private double latitude;
+
+    private String bus_info;
 }
