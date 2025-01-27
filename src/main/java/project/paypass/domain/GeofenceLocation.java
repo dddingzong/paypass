@@ -24,22 +24,14 @@ public class GeofenceLocation {
     @Column(nullable = false)
     private Long stationNumber;
 
-    @Column(nullable = false)
-    private boolean board;
-
     public GeofenceLocation(String main_id, Long stationNumber) {
         this.mainId = mainId;
         this.fenceInTime = LocalDateTime.now();
         this.fenceOutTime = LocalDateTime.of(2000, 1, 1, 0, 0);
         this.stationNumber = stationNumber;
-        this.board = false;
     }
 
     public void userFenceOut(){
         this.fenceOutTime = LocalDateTime.now();
-    }
-
-    public void userBoardBus(){
-        this.board = true;
     }
 }
