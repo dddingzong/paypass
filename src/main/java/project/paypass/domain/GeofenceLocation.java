@@ -2,11 +2,13 @@ package project.paypass.domain;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Entity
+@ToString
 public class GeofenceLocation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
