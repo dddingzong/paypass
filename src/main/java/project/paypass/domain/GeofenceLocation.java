@@ -23,10 +23,10 @@ public class GeofenceLocation {
     @Column(nullable = false)
     private Long stationNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String busInfo;
 
-    @Column(nullable = false, name = "bus_info", columnDefinition = "TEXT")
+    @Column(nullable = false)
     private boolean board;
 
     public GeofenceLocation(String mainId, Long stationNumber, String busInfo) {

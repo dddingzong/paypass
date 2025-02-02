@@ -15,9 +15,6 @@ public class Log {
     @Column(nullable = false)
     private String mainId;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long logId;
-
     @Column(nullable = false)
     private LocalDateTime departureTime;
 

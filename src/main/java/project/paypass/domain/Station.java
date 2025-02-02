@@ -20,6 +20,6 @@ public class Station {
 
     private double latitude;
 
-    @Column(name = "bus_info", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String busInfo;
 }
