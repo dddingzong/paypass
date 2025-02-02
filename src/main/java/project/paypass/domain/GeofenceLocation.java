@@ -18,17 +18,24 @@ public class GeofenceLocation {
     @Column(nullable = false)
     private LocalDateTime fenceInTime;
 
-    @Column(nullable = false)
     private LocalDateTime fenceOutTime;
 
     @Column(nullable = false)
     private Long stationNumber;
 
-    public GeofenceLocation(String main_id, Long stationNumber) {
+    @Column(nullable = false)
+    private String busInfo;
+
+    @Column(nullable = false, name = "bus_info", columnDefinition = "TEXT")
+    private boolean board;
+
+    public GeofenceLocation(String mainId, Long stationNumber, String busInfo) {
         this.mainId = mainId;
         this.fenceInTime = LocalDateTime.now();
-        this.fenceOutTime = LocalDateTime.of(2000, 1, 1, 0, 0);
+        this.fenceOutTime = null;
         this.stationNumber = stationNumber;
+        this.busInfo = busInfo;
+        this.board = false;
     }
 
     public void userFenceOut(){
