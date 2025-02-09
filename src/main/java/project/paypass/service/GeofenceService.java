@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import project.paypass.domain.GeofenceLocation;
 import project.paypass.repository.GeofenceLocationRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GeofenceService {
@@ -20,6 +22,21 @@ public class GeofenceService {
     @Transactional
     public void save(GeofenceLocation geofenceLocation){
         geofenceLocationRepository.save(geofenceLocation);
+    }
+
+    @Transactional
+    public List<GeofenceLocation> findByMainIdAndStationNumber(String mainId, Long stationNumber){
+        return geofenceLocationRepository.findByMainIdAndStationNumber(mainId, stationNumber);
+    }
+
+    @Transactional
+    public void userFenceOut(GeofenceLocation geofenceLocation) {
+        geofenceLocation.userFenceOut();
+    }
+
+    @Transactional
+    public boolean fenceOutTimeIsNull(GeofenceLocation geofenceLocation){
+        return geofenceLocation.fenceOutTimeIsNull();
     }
 
 }
