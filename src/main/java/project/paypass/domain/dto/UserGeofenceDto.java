@@ -7,11 +7,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class UserGeofenceInDto {
+public class UserGeofenceDto {
     private String mainId;
     private Long stationNumber;
 
-    public UserGeofenceInDto(String mainId, Long stationNumber) {
+    public UserGeofenceDto(String mainId, Long stationNumber) {
         this.mainId = mainId;
         this.stationNumber = stationNumber;
     }
