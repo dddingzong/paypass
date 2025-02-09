@@ -43,4 +43,8 @@ public class GeofenceLocation {
     public void userFenceOut(){
         this.fenceOutTime = LocalDateTime.now();
     }
+
+    public boolean fenceOutTimeIsNull(){
+        return fenceOutTime == null;
+    }
 }
