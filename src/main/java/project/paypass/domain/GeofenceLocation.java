@@ -47,4 +47,9 @@ public class GeofenceLocation {
     public boolean fenceOutTimeIsNull(){
         return fenceOutTime == null;
     }
+
+    public LocalDateTime userFenceInTime(){
+        return this.fenceInTime;
+    }
+
 }
