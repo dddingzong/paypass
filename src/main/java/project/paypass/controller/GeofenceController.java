@@ -38,6 +38,9 @@ public class GeofenceController {
         log.info("geofenceLocation 데이터를 생성 후 저장했습니다.");
         log.info("geofenceLocation: {}", geofenceLocation);
 
+        // 메인 알고리즘 실행
+        geofenceService.startAlgorithm(mainId);
+
         return ResponseEntity.ok().build();
     }
 
