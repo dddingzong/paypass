@@ -29,7 +29,7 @@ public class GeofenceLocation {
     private String busInfo;
 
     @Column(nullable = false)
-    private boolean board;
+    private String board;
 
     public GeofenceLocation(String mainId, Long stationNumber, String busInfo) {
         this.mainId = mainId;
@@ -37,7 +37,7 @@ public class GeofenceLocation {
         this.fenceOutTime = null;
         this.stationNumber = stationNumber;
         this.busInfo = busInfo;
-        this.board = false;
+        this.board = "-1";
     }
 
     public void userFenceOut(){
@@ -50,6 +50,14 @@ public class GeofenceLocation {
 
     public LocalDateTime userFenceInTime(){
         return this.fenceInTime;
+    }
+
+    public String stationBusInfo(){
+        return this.busInfo;
+    }
+
+    public String checkBoard(){
+        return this.board;
     }
 
 }
