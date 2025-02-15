@@ -11,4 +11,6 @@ public interface GeofenceLocationRepository extends JpaRepository<GeofenceLocati
 
     @Query("select g from GeofenceLocation g where g.mainId = :mainId AND g.stationNumber = :stationNumber")
     List<GeofenceLocation> findByMainIdAndStationNumber(@Param("mainId")String mainId, @Param("stationNumber")Long stationNumber);
+
+    List<GeofenceLocation> findByMainId(String mainId);
 }
