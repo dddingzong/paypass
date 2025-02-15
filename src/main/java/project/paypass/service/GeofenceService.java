@@ -13,6 +13,7 @@ import java.util.List;
 public class GeofenceService {
 
     private final GeofenceLocationRepository geofenceLocationRepository;
+    private final AlgorithmService algorithmService;
 
     @Transactional
     public GeofenceLocation createGeofenceLocation(String mainId, Long stationNumber, String busInfo){
@@ -38,5 +39,15 @@ public class GeofenceService {
     public boolean fenceOutTimeIsNull(GeofenceLocation geofenceLocation){
         return geofenceLocation.fenceOutTimeIsNull();
     }
+
+    @Transactional
+    public void startAlgorithm(String mainId){
+
+        // mainId로 geofenceLocation 조회
+        List<GeofenceLocation> geofenceLocations = geofenceLocationRepository.findByMainId(mainId);
+
+        algorithmService.basic(geofenceLocations);
+    }
+
 
 }
