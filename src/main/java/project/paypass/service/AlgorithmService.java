@@ -23,62 +23,22 @@ public class AlgorithmService {
 
     private void basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
 
-        int count = 1;
         // busInfo만 존재하는 List 생성
         List<String> busInfoList = makeBusInfoList(sortedGeofenceLocations);
         log.info("busInfoList = " + busInfoList);
 
-        for (String oneStationInfo : busInfoList) { // oneStationInfo -> 하나의 정류장에 대한 busInfo
-            // busInfoList의 routeId만 추출하여 List로 변환 (나중에 메인로직에서 사용)
-            List<String> routeIdList = makeRouteIdList(busInfoList, count);
-            log.info("routeIdList = " + routeIdList);
-            // busInfoList의 sequence만 추출해서 List로 변환 (나중에 메인로직에서 사용)
-            List<String> sequenceList = makeSequenceList(busInfoList, count);
-            log.info("sequenceList = " + sequenceList);
+        // busInfoList를 통하여 busInfoMap 생성
+        Map<String, List<Long>> busInfoMap = makeBusInfoMap(busInfoList);
+        log.info("busInfoMap = " + busInfoMap);
 
-            // busInfo만 존재하는 list를 다시 하나씩 분류 (정류장마다 분류)
-            List<String> oneStationInfoList = Arrays.asList(oneStationInfo.replaceAll("^\\{|\\}$", "").split("},\\{"));
+        // sequence가 순차적으로 증가하는지 검사
+        // sequence의 일정 부분만 조건 만족 시 해당 부분의 index만 추출
+        // 조건 만족 시 해당 beginIndex와 endIndex를 가지는 map 추가
+        Map<String, List<Integer>> indexMap = makeIndexMap(busInfoMap);
+        log.info("indexMap = " + indexMap);
 
-            // 하나의 정류장에 대한 List를 가지고 기본 알고리즘 실행 (routeId의 동일과 sequence의 차이가 1인지 확인)
-            // oneStationInfoList: 하나의 정류장에 대한 busInfo List
-            checkDuplicateRouteId(oneStationInfoList, routeIdList, sequenceList);
-            count++;
-        }
+        // 이후 해당 indexMap을 활용하여 geofenceLocation 필터링 후 평균시간비교 로직 작동
 
-    }
-
-    private String checkDuplicateRouteId(List<String> oneStationInfoList, List<String> routeIdList, List<String> sequenceList) {
-        // 하나의 정류장에 대한 busInfo를 하나씩 분리 (버스 하나씩 분리)
-
-        List<String> checkedList = new ArrayList<>();
-
-        for (String oneBusInfo : oneStationInfoList) {
-
-            // routeId와 sequence 추출
-            List<String> routeIdAndSequence = Arrays.asList(oneBusInfo.split(","));
-            String routeId = routeIdAndSequence.get(0);
-            String sequence = routeIdAndSequence.get(1);
-
-            // contain 한다면 이후 geofenceLocation에서 같은 routeId가 존재
-            if (routeIdList.contains(routeId)) {
-                int routeIdIndex = routeIdList.indexOf(routeId);
-                // true 값이 나오면 routeId와 sequence의 조건을 만족한다.
-                boolean thereIsNextStation = checkSequencePlusOne(sequenceList, routeIdIndex, sequence);
-
-                if (thereIsNextStation) {
-                    checkedList.add(routeId); // 현재 검사하는 geofenceLocation 뿐만 아니라 다음 정류장도 같이 board를 업데이트해야된다 2025.02.12
-                }
-            }
-            // contain 하지 않는다면 이후 geofenceLocation에서 같은 routeId가 존재하지 않음
-        }
-
-        return String.join(",",checkedList);
-    }
-
-    private boolean checkSequencePlusOne(List<String> sequenceList, int routeIdIndex, String sequence) {
-        int nextStation = stringToInt(sequenceList.get(routeIdIndex));
-        int checkStation = stringToInt(sequence) + 1;
-        return nextStation == checkStation;
     }
 
     private List<String> makeBusInfoList(List<GeofenceLocation> sortedGeofenceLocations) {
@@ -94,45 +54,100 @@ public class AlgorithmService {
         return busInfoList;
     }
 
-    private List<String> makeRouteIdList(List<String> busInfoList, int count) {
-        // busInfoList에서 각 busInfo의 routeId만 추출하여 새로운 리스트에 추가
-        List<String> localList = new ArrayList<>();
+    private Map<String, List<Long>> makeBusInfoMap(List<String> busInfoList) {
+        Map<String, List<Long>> busInfoMap = new HashMap<>();
 
-        // busInfo에서 routeId 추출
-        for (String oneStationInfo : busInfoList.subList(count, busInfoList.size())) {
+        // busInfoList에서 routeId만을 추출해서 set 생성
+        Set<String> routeIdSet = makeRouteIdSet(busInfoList);
+
+        // busInfoMap에서 key값 추가
+        busInfoMapPlusKey(busInfoMap, routeIdSet);
+
+        // busInfoMap에서 value값 추가
+        busInfoMapPlusValue(busInfoMap, busInfoList);
+
+        return busInfoMap;
+    }
+
+    private Map<String, List<Integer>> makeIndexMap(Map<String, List<Long>> busInfoMap) {
+        Map<String, List<Integer>> indexMap = new HashMap<>();
+
+        for (String routeId : busInfoMap.keySet()) {
+            List<Long> sequenceList = busInfoMap.get(routeId);
+            List<Integer> beginAndEndIndex = checkSequential(sequenceList);
+
+            // 조건 만족시 실행 로직
+            if (beginAndEndIndex.size() >= 2) {
+                indexMap.put(routeId, beginAndEndIndex);
+            }
+
+            // 조건 불만족 시 실행 로직
+            if (beginAndEndIndex.isEmpty()) {
+                continue;
+            }
+        }
+
+        return indexMap;
+    }
+
+    private Set<String> makeRouteIdSet(List<String> busInfoList) {
+        // busInfoList에서 각 busInfo의 routeId만 추출하여 set에 추가
+        Set<String> localSet = new HashSet<>();
+        // busInfoList를 쪼개서 oneStationInfoList 생성
+        for (String oneStationInfo : busInfoList) {
             List<String> oneStationInfoList = Arrays.asList(oneStationInfo.replaceAll("^\\{|\\}$", "").split("},\\{"));
-
+            // oneStationInfoList를 쪼개서 routeIdAndSequence 생성
             for (String oneBusInfo : oneStationInfoList) {
                 List<String> routeIdAndSequence = Arrays.asList(oneBusInfo.split(","));
                 String routeId = routeIdAndSequence.get(0);
-                localList.add(routeId);
+                localSet.add(routeId);
             }
         }
-
-        return localList;
+        return localSet;
     }
 
-    private List<String> makeSequenceList(List<String> busInfoList, int count) {
-        // busInfoList에서 각 busInfo의 sequence만 추출하여 새로운 리스트에 추가
-        List<String> localList = new ArrayList<>();
+    private void busInfoMapPlusKey(Map<String, List<Long>> busInfoMap, Set<String> routeIdSet) {
+        for (String routeId : routeIdSet) {
+            busInfoMap.put(routeId, new ArrayList<>());
+        }
+    }
 
-        // busInfo에서 sequence 추출
-        for (String oneStationInfo : busInfoList.subList(count, busInfoList.size())) {
+    private void busInfoMapPlusValue(Map<String, List<Long>> busInfoMap, List<String> busInfoList) {
+        // busInfoList를 쪼개서 oneStationInfoList 생성
+        for (String oneStationInfo : busInfoList) {
             List<String> oneStationInfoList = Arrays.asList(oneStationInfo.replaceAll("^\\{|\\}$", "").split("},\\{"));
-
+            // oneStationInfoList를 쪼개서 routeIdAndSequence 생성
             for (String oneBusInfo : oneStationInfoList) {
                 List<String> routeIdAndSequence = Arrays.asList(oneBusInfo.split(","));
-                String routeId = routeIdAndSequence.get(1);
-                localList.add(routeId);
+                String routeId = routeIdAndSequence.get(0);
+                Long sequence = stringToLong(routeIdAndSequence.get(1));
+                // sequence 값 추가하기
+                List<Long> sequenceList = busInfoMap.get(routeId);
+                sequenceList.add(sequence);
             }
         }
-
-        return localList;
     }
 
-    private int stringToInt(String string){
-        return Integer.parseInt(string);
+    private List<Integer> checkSequential(List<Long> sequenceList) {
+        List<Integer> beginAndEndIndex = new ArrayList<>();
+
+        if (sequenceList.size() < 2) {
+            return beginAndEndIndex;
+        }
+
+
+
+
+
+
+
+
+        return beginAndEndIndex;
     }
 
+
+    private Long stringToLong(String string) {
+        return Long.parseLong(string);
+    }
 
 }
