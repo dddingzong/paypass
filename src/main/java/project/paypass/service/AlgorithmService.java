@@ -14,14 +14,31 @@ public class AlgorithmService {
 
     public void basic(List<GeofenceLocation> geofenceLocations) {
         // 데이터 정렬(fenceInTime 기준)
-        List<GeofenceLocation> sortedGeofenceLocations = geofenceLocations.stream()
-                .sorted(Comparator.comparing(GeofenceLocation::userFenceInTime))
-                .toList();
+        List<GeofenceLocation> sortedGeofenceLocations = sortByUserFenceInTime(geofenceLocations);
 
-        basicLogic(sortedGeofenceLocations);
+        Map<String, List<Integer>> indexMap = basicLogic(sortedGeofenceLocations);
+
+        // indexMap을 참고하여 geofenceLocation 필터링
+        List<GeofenceLocation> geofenceLocationList = filterGeofenceLocationList(sortedGeofenceLocations, indexMap);
+
+        // list를 set으로 변환해서 test하기 (테스트용도)
+        for (GeofenceLocation geofenceLocation : geofenceLocationList) {
+            System.out.println("geofenceLocation = " + geofenceLocation);
+        }
+        System.out.println("geofenceLocationList.size() = " + geofenceLocationList.size());
+
+        System.out.println("------------------------------------------------------------------");
+
+        Set<GeofenceLocation> geofenceLocationSet = Set.copyOf(geofenceLocationList);
+
+        for (GeofenceLocation geofenceLocation : geofenceLocationSet) {
+            System.out.println("geofenceLocation = " + geofenceLocation);
+        }
+        System.out.println("geofenceLocationSet.size() = " + geofenceLocationSet.size());
+
     }
 
-    private void basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
+    private Map<String, List<Integer>> basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
 
         // busInfo만 존재하는 List 생성
         List<String> busInfoList = makeBusInfoList(sortedGeofenceLocations);
@@ -37,10 +54,7 @@ public class AlgorithmService {
         Map<String, List<Integer>> indexMap = makeIndexMap(busInfoMap);
         log.info("indexMap = " + indexMap);
 
-
-
-        // 이후 해당 indexMap을 활용하여 geofenceLocation 필터링 후 평균시간비교 로직 작동
-
+        return indexMap;
     }
 
     private List<String> makeBusInfoList(List<GeofenceLocation> sortedGeofenceLocations) {
@@ -172,9 +186,67 @@ public class AlgorithmService {
         return beginAndEndIndex;
     }
 
+    private List<GeofenceLocation> filterGeofenceLocationList(List<GeofenceLocation> sortedgeofenceLocationList, Map<String, List<Integer>> indexMap) {
+        List<GeofenceLocation> geofenceLocationList = new ArrayList<>();
+        Set<String> keySet = indexMap.keySet();
+
+        for (String routeId : keySet) {
+            List<GeofenceLocation> containRouteIdList = new ArrayList<>();
+            List<Integer> indexList = indexMap.get(routeId);
+
+            // sortedGeofenceLocationList에서 geofenceLocation을 추출해서 하나하나 확인하기
+            for (GeofenceLocation geofenceLocation : sortedgeofenceLocationList) {
+                // 만약 포함한지 않는다면
+                if (!geofenceLocation.stationBusInfo().contains(routeId)) {
+                    continue;
+                }
+
+                // 만약 포함한다면
+                if (geofenceLocation.stationBusInfo().contains(routeId)) {
+                    containRouteIdList.add(geofenceLocation);
+                }
+            }
+
+            // indexList에 존재하는 index를 활용하여 containList indexing하기
+            List<GeofenceLocation> sequentialcontainRouteIdList = indexcontainRouteIdList(containRouteIdList, indexList);
+            geofenceLocationList.addAll(sequentialcontainRouteIdList);
+        }
+
+        return geofenceLocationList;
+    }
+
+    private List<GeofenceLocation> indexcontainRouteIdList(List<GeofenceLocation> containRouteIdList, List<Integer> indexList) {
+        List<GeofenceLocation> sequentialcontainRouteIdList = new ArrayList<>();
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        for (GeofenceLocation geofenceLocation : containRouteIdList) {
+            System.out.println("containRouteIdList의 geofenceLocation = " + geofenceLocation);
+        }
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        for (int i = 0; i < indexList.size(); i += 2) {
+            Integer startIndex = indexList.get(i);
+            Integer endIndex = indexList.get(i + 1);
+
+            List<GeofenceLocation> localList = containRouteIdList.subList(startIndex, endIndex + 1);
+
+            System.out.println("==========================================================");
+            for (GeofenceLocation geofenceLocation : localList) {
+                System.out.println("localList의 geofenceLocation = " + geofenceLocation);
+            }
+            System.out.println("==========================================================");
+            sequentialcontainRouteIdList.addAll(localList);
+        }
+        return sequentialcontainRouteIdList;
+    }
 
     private Long stringToLong(String string) {
         return Long.parseLong(string);
+    }
+
+    private List<GeofenceLocation> sortByUserFenceInTime(List<GeofenceLocation> geofenceLocationList) {
+        return geofenceLocationList.stream()
+                .sorted(Comparator.comparing(GeofenceLocation::userFenceInTime))
+                .toList();
     }
 
 }
