@@ -37,6 +37,8 @@ public class AlgorithmService {
         Map<String, List<Integer>> indexMap = makeIndexMap(busInfoMap);
         log.info("indexMap = " + indexMap);
 
+
+
         // 이후 해당 indexMap을 활용하여 geofenceLocation 필터링 후 평균시간비교 로직 작동
 
     }
@@ -131,16 +133,41 @@ public class AlgorithmService {
     private List<Integer> checkSequential(List<Long> sequenceList) {
         List<Integer> beginAndEndIndex = new ArrayList<>();
 
+        // ex) sequenceList = [1,2,3,4,4,6,9] -> beginAndEndIndex = [0,3]
+        // ex) sequenceList = [1,3,4,5,9,13,21,22] -> beginAndEndIndex = [1,3,6,7]
+        // ex) sequenceList = [1,3,2,4,7,1,0,1,2,3,3,2,6] -> beginAndEndIndex = [6,9]
+        // ex) sequenceList = [1,2,3,7,8,23,24,1,3] -> beginAndEndIndex = [0,2,3,4,5,6]
+        // 연속되는 부분이 있다면 해당 index 값을 beginAndEndIndex 리스트에 넣기
         if (sequenceList.size() < 2) {
             return beginAndEndIndex;
         }
 
+        int startIndex = 0;
+        // 연속되는 구간의 시작과 끝 여부를 판단
+        boolean isSequential = false;
 
+        for (int i = 0; i < sequenceList.size() - 1; i++) {
+            // 두 값이 연속적인지 여부를 판단
+            boolean isContinuous = sequenceList.get(i + 1) - sequenceList.get(i) == 1;
 
+            // i+1 값과 연속성 존재 + 첫 연속 구간
+            if (isContinuous && !isSequential) {
+                startIndex = i;
+                isSequential = true;
+            }
 
+            // i+1 값과 연속성 존재하지 않음 + 연속구간 끝
+            if (!isContinuous && isSequential) {
+                beginAndEndIndex.add(startIndex);
+                beginAndEndIndex.add(i);
+                isSequential = false;
+            }
+        }
 
-
-
+        if (isSequential) {
+            beginAndEndIndex.add(startIndex);
+            beginAndEndIndex.add(sequenceList.size() - 1);
+        }
 
         return beginAndEndIndex;
     }
