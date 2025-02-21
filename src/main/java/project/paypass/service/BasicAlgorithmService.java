@@ -10,9 +10,9 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AlgorithmService {
+public class BasicAlgorithmService {
 
-    public void basic(List<GeofenceLocation> geofenceLocations) {
+    public List<GeofenceLocation> algorithmStart(List<GeofenceLocation> geofenceLocations) {
         // 데이터 정렬(fenceInTime 기준)
         List<GeofenceLocation> sortedGeofenceLocations = sortByUserFenceInTime(geofenceLocations);
 
@@ -27,15 +27,18 @@ public class AlgorithmService {
         }
         System.out.println("geofenceLocationList.size() = " + geofenceLocationList.size());
 
-        System.out.println("------------------------------------------------------------------");
-
         Set<GeofenceLocation> geofenceLocationSet = Set.copyOf(geofenceLocationList);
+        List<GeofenceLocation> resultList = new ArrayList<>(geofenceLocationSet);
+        List<GeofenceLocation> sortedResultList = sortByUserFenceInTime(resultList);
 
-        for (GeofenceLocation geofenceLocation : geofenceLocationSet) {
+        System.out.println("------------------------------------------------------------------");
+        System.out.println("중복 제거 후 정렬한 리스트");
+        for (GeofenceLocation geofenceLocation : sortedResultList) {
             System.out.println("geofenceLocation = " + geofenceLocation);
         }
-        System.out.println("geofenceLocationSet.size() = " + geofenceLocationSet.size());
+        System.out.println("sortedresultList.size() = " + sortedResultList.size());
 
+        return sortedResultList;
     }
 
     private Map<String, List<Integer>> basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
