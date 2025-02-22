@@ -13,7 +13,10 @@ import java.util.List;
 public class GeofenceService {
 
     private final GeofenceLocationRepository geofenceLocationRepository;
+    // 알고리즘 관련
     private final BasicAlgorithmService basicAlgorithmService;
+    private final AverageTimeAlgorithmService averageTimeAlgorithmService;
+    private final DuplicateDeleteAlgorithm duplicateDeleteAlgorithm;
 
     @Transactional
     public GeofenceLocation createGeofenceLocation(String mainId, Long stationNumber, String busInfo){
@@ -41,12 +44,16 @@ public class GeofenceService {
     }
 
     @Transactional
-    public void startAlgorithm(String mainId){
+    public List<GeofenceLocation> startAlgorithm(String mainId){
 
         // mainId로 geofenceLocation 조회
         List<GeofenceLocation> geofenceLocations = geofenceLocationRepository.findByMainId(mainId);
 
         List<GeofenceLocation> basicGeofenceLocationList = basicAlgorithmService.algorithmStart(geofenceLocations);
+        List<GeofenceLocation> averageTimeGeofenceLocationList = averageTimeAlgorithmService.algorithmStart(basicGeofenceLocationList);
+        List<GeofenceLocation> duplicationDeleteGeofenceLocationList = duplicateDeleteAlgorithm.algorithmStart(averageTimeGeofenceLocationList);
+
+        return duplicationDeleteGeofenceLocationList;
     }
 
 
