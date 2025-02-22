@@ -1,6 +1,5 @@
 package project.paypass.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import project.paypass.domain.GeofenceLocation;
@@ -9,7 +8,6 @@ import java.util.*;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class BasicAlgorithmService {
 
     public List<GeofenceLocation> algorithmStart(List<GeofenceLocation> geofenceLocations) {
@@ -51,10 +49,15 @@ public class BasicAlgorithmService {
         Map<String, List<Long>> busInfoMap = makeBusInfoMap(busInfoList);
         log.info("busInfoMap = " + busInfoMap);
 
+        // 여기서 하나의 busInfo 안에 두개의 routeId가 있는 경우 해결
+        // ex) 700013, 1400034, 1000030 이런식으로 변형? 000이 포함되어 있으면 routeId 중복 상황이다.
+        Map<String, List<Long>> checkedBusInfoMap = checkDuplicateRouteId(busInfoMap);
+        log.info("checkedBusInfoMap = " + checkedBusInfoMap);
+
         // sequence가 순차적으로 증가하는지 검사
         // sequence의 일정 부분만 조건 만족 시 해당 부분의 index만 추출
         // 조건 만족 시 해당 beginIndex와 endIndex를 가지는 map 추가
-        Map<String, List<Integer>> indexMap = makeIndexMap(busInfoMap);
+        Map<String, List<Integer>> indexMap = makeIndexMap(checkedBusInfoMap);
         log.info("indexMap = " + indexMap);
 
         return indexMap;
@@ -240,6 +243,15 @@ public class BasicAlgorithmService {
             sequentialcontainRouteIdList.addAll(localList);
         }
         return sequentialcontainRouteIdList;
+    }
+
+    private Map<String,List<Long>> checkDuplicateRouteId(Map<String,List<Long>> busInfoMap) {
+        Map<String,List<Long>> checkedBusInfoMap = new HashMap<>();
+
+
+
+
+        return checkedBusInfoMap;
     }
 
     private Long stringToLong(String string) {
