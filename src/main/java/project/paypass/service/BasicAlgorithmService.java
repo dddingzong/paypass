@@ -159,10 +159,6 @@ public class BasicAlgorithmService {
     }
 
     private Map<String, List<Long>> divideBusInfoMap(Map<String, List<Long>> busInfoMap) {
-
-        log.info("===========================================================================");
-        log.info("busInfoMap = " + busInfoMap);
-
         // 수정하기 위한 복사본 생성
         Map<String, List<Long>> updatedBusInfoMap = new TreeMap<>(busInfoMap);
         // 삭제할 key를 저장할 리스트 생성
@@ -206,7 +202,7 @@ public class BasicAlgorithmService {
                         updatedBusInfoMap.put(pureRouteId + "_" + currentCount, new ArrayList<>(sequenceList));
 
                         sequenceList.set(i, secondSequence);
-                        updatedBusInfoMap.put(pureRouteId + "_" + (count+1), new ArrayList<>(sequenceList));
+                        updatedBusInfoMap.put(pureRouteId + "_" + (count + 1), new ArrayList<>(sequenceList));
                         break;
                     }
                 }
@@ -222,9 +218,7 @@ public class BasicAlgorithmService {
         busInfoMap.clear();
         busInfoMap.putAll(updatedBusInfoMap);
 
-        log.info("===========================================================================");
-
-        if(check000(busInfoMap)){
+        if (check000(busInfoMap)) {
             return divideBusInfoMap(busInfoMap);
         }
 
@@ -243,12 +237,12 @@ public class BasicAlgorithmService {
         return false;
     }
 
-    private Long findMaxCount(Map<String, List<Long>> updatedBusInfoMap,String pureRouteId) {
+    private Long findMaxCount(Map<String, List<Long>> updatedBusInfoMap, String pureRouteId) {
         Set<String> keySet = updatedBusInfoMap.keySet();
         ArrayList<Long> countList = new ArrayList<>();
 
         for (String routeId : keySet) {
-            if (routeId.contains(pureRouteId)){
+            if (routeId.contains(pureRouteId)) {
                 List<String> routeIdAndCount = Arrays.asList(routeId.split("_"));
                 countList.add(Long.parseLong(routeIdAndCount.get(1)));
             }
@@ -360,11 +354,6 @@ public class BasicAlgorithmService {
 
     private List<GeofenceLocation> indexcontainRouteIdList(List<GeofenceLocation> containRouteIdList, List<Integer> indexList) {
         List<GeofenceLocation> sequentialcontainRouteIdList = new ArrayList<>();
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        for (GeofenceLocation geofenceLocation : containRouteIdList) {
-            System.out.println("containRouteIdList의 geofenceLocation = " + geofenceLocation);
-        }
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         for (int i = 0; i < indexList.size(); i += 2) {
             Integer startIndex = indexList.get(i);
@@ -372,11 +361,6 @@ public class BasicAlgorithmService {
 
             List<GeofenceLocation> localList = containRouteIdList.subList(startIndex, endIndex + 1);
 
-            System.out.println("==========================================================");
-            for (GeofenceLocation geofenceLocation : localList) {
-                System.out.println("localList의 geofenceLocation = " + geofenceLocation);
-            }
-            System.out.println("==========================================================");
             sequentialcontainRouteIdList.addAll(localList);
         }
         return sequentialcontainRouteIdList;
