@@ -10,36 +10,16 @@ import java.util.*;
 @Service
 public class BasicAlgorithmService {
 
-    public List<GeofenceLocation> algorithmStart(List<GeofenceLocation> geofenceLocations) {
+    public Map<String, List<Long>> algorithmStart(List<GeofenceLocation> geofenceLocations) {
         // 데이터 정렬(fenceInTime 기준)
         List<GeofenceLocation> sortedGeofenceLocations = sortByUserFenceInTime(geofenceLocations);
 
-        Map<String, List<Integer>> indexMap = basicLogic(sortedGeofenceLocations);
+        Map<String, List<Long>> continuousBusInfoMap = basicLogic(sortedGeofenceLocations);
 
-        // indexMap을 참고하여 geofenceLocation 필터링
-        List<GeofenceLocation> geofenceLocationList = filterGeofenceLocationList(sortedGeofenceLocations, indexMap);
-
-        // list를 set으로 변환해서 test하기 (테스트용도)
-        for (GeofenceLocation geofenceLocation : geofenceLocationList) {
-            System.out.println("geofenceLocation = " + geofenceLocation);
-        }
-        System.out.println("geofenceLocationList.size() = " + geofenceLocationList.size());
-
-        Set<GeofenceLocation> geofenceLocationSet = Set.copyOf(geofenceLocationList);
-        List<GeofenceLocation> resultList = new ArrayList<>(geofenceLocationSet);
-        List<GeofenceLocation> sortedResultList = sortByUserFenceInTime(resultList);
-
-        System.out.println("------------------------------------------------------------------");
-        System.out.println("중복 제거 후 정렬한 리스트");
-        for (GeofenceLocation geofenceLocation : sortedResultList) {
-            System.out.println("geofenceLocation = " + geofenceLocation);
-        }
-        System.out.println("sortedresultList.size() = " + sortedResultList.size());
-
-        return sortedResultList;
+        return continuousBusInfoMap;
     }
 
-    private Map<String, List<Integer>> basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
+    private Map<String, List<Long>> basicLogic(List<GeofenceLocation> sortedGeofenceLocations) {
 
         // busInfo만 존재하는 List 생성
         List<String> busInfoList = makeBusInfoList(sortedGeofenceLocations);
@@ -50,12 +30,12 @@ public class BasicAlgorithmService {
         log.info("busInfoMap = " + busInfoMap);
 
         // sequence가 순차적으로 증가하는지 검사
-        // sequence의 일정 부분만 조건 만족 시 해당 부분의 index만 추출
-        // 조건 만족 시 해당 beginIndex와 endIndex를 가지는 map 추가
-        Map<String, List<Integer>> indexMap = makeIndexMap(busInfoMap);
-        log.info("indexMap = " + indexMap);
+        // sequence의 일정 부분만 조건 만족 시 해당 부분의 sequence만 추출
+        // 조건 만족 시 해당 sequence를 가지는 map 추가
+        Map<String, List<Long>> continuousBusInfoMap = makeContinuousBusInfoMap(busInfoMap);
+        log.info("continuousBusInfoMap = " + continuousBusInfoMap);
 
-        return indexMap;
+        return continuousBusInfoMap;
     }
 
     private List<String> makeBusInfoList(List<GeofenceLocation> sortedGeofenceLocations) {
@@ -89,27 +69,6 @@ public class BasicAlgorithmService {
         Map<String, List<Long>> finalBusInfoMap = divideBusInfoMap(busInfoMap);
 
         return finalBusInfoMap;
-    }
-
-    private Map<String, List<Integer>> makeIndexMap(Map<String, List<Long>> busInfoMap) {
-        Map<String, List<Integer>> indexMap = new TreeMap<>();
-
-        for (String routeId : busInfoMap.keySet()) {
-            List<Long> sequenceList = busInfoMap.get(routeId);
-            List<Integer> beginAndEndIndex = checkSequential(sequenceList);
-
-            // 조건 만족시 실행 로직
-            if (beginAndEndIndex.size() >= 2) {
-                indexMap.put(routeId, beginAndEndIndex);
-            }
-
-            // 조건 불만족 시 실행 로직
-            if (beginAndEndIndex.isEmpty()) {
-                continue;
-            }
-        }
-
-        return indexMap;
     }
 
     private Set<String> makeRouteIdSet(List<String> busInfoList) {
@@ -156,6 +115,32 @@ public class BasicAlgorithmService {
                 sequenceList.add(sequence);
             }
         }
+    }
+
+    private List<String> checkDuplicateRouteId(List<String> oneStationInfoList) {
+        Map<String, StringBuilder> oneStationInfoMap = new TreeMap<>();
+
+        for (String oneBusInfo : oneStationInfoList) {
+            List<String> routeIdAndSequence = Arrays.asList(oneBusInfo.split(","));
+            String routeId = routeIdAndSequence.get(0);
+            String sequence = routeIdAndSequence.get(1);
+
+            // 같은 routeId가 있으면 "000"을 추가하여 결합
+            oneStationInfoMap.putIfAbsent(routeId, new StringBuilder());
+            if (!oneStationInfoMap.get(routeId).isEmpty()) {
+                oneStationInfoMap.get(routeId).append("000");
+            }
+            oneStationInfoMap.get(routeId).append(sequence);
+        }
+
+        List<String> checkedOneStationInfoList = new ArrayList<>();
+        for (var oneBusInfo : oneStationInfoMap.entrySet()) {
+            String routeId = oneBusInfo.getKey();
+            String sequence = oneBusInfo.getValue().toString();
+            checkedOneStationInfoList.add(routeId + "," + sequence);
+        }
+
+        return checkedOneStationInfoList;
     }
 
     private Map<String, List<Long>> divideBusInfoMap(Map<String, List<Long>> busInfoMap) {
@@ -225,7 +210,6 @@ public class BasicAlgorithmService {
         return busInfoMap;
     }
 
-
     private boolean check000(Map<String, List<Long>> busInfoMap) {
         for (List<Long> sequenceList : busInfoMap.values()) {
             for (Long sequence : sequenceList) {
@@ -250,120 +234,99 @@ public class BasicAlgorithmService {
         return countList.stream().max(Long::compareTo).get();
     }
 
-    private List<String> checkDuplicateRouteId(List<String> oneStationInfoList) {
-        Map<String, StringBuilder> oneStationInfoMap = new TreeMap<>();
+    private Map<String, List<Long>> makeContinuousBusInfoMap(Map<String, List<Long>> busInfoMap) {
+        Map<String, List<Long>> continuousBusInfoMap = new TreeMap<>();
 
-        for (String oneBusInfo : oneStationInfoList) {
-            List<String> routeIdAndSequence = Arrays.asList(oneBusInfo.split(","));
-            String routeId = routeIdAndSequence.get(0);
-            String sequence = routeIdAndSequence.get(1);
+        for (String routeId : busInfoMap.keySet()) {
+            List<Long> sequenceList = busInfoMap.get(routeId);
+            List<List<Long>> continuousSequenceList = checkSequential(sequenceList);
 
-            // 같은 routeId가 있으면 "000"을 추가하여 결합
-            oneStationInfoMap.putIfAbsent(routeId, new StringBuilder());
-            if (!oneStationInfoMap.get(routeId).isEmpty()) {
-                oneStationInfoMap.get(routeId).append("000");
+            // checkSequential 불만족 시 바로 다음 routeId로 넘어가기
+            if (continuousSequenceList.isEmpty()) {
+                continue;
             }
-            oneStationInfoMap.get(routeId).append(sequence);
+
+            for (List<Long> continuousSequences : continuousSequenceList) {
+                // 여기서 Map으로 저장
+                // Map Ket Name _? 으로 생성해야한다
+
+                // route가 이미 존재하면 다음 _? 값을 배정해야한다
+                // _가 이미 붙어있는 상황을 생각해야한다.
+                String keyName = assignKeyName(continuousBusInfoMap, routeId);
+
+                continuousBusInfoMap.put(keyName, continuousSequences);
+            }
         }
 
-        List<String> checkedOneStationInfoList = new ArrayList<>();
-        for (var oneBusInfo : oneStationInfoMap.entrySet()) {
-            String routeId = oneBusInfo.getKey();
-            String sequence = oneBusInfo.getValue().toString();
-            checkedOneStationInfoList.add(routeId + "," + sequence);
-        }
-
-        return checkedOneStationInfoList;
+        return continuousBusInfoMap;
     }
 
-    private List<Integer> checkSequential(List<Long> sequenceList) {
-        List<Integer> beginAndEndIndex = new ArrayList<>();
+    private List<List<Long>> checkSequential(List<Long> sequenceList) {
+        List<List<Long>> continuousSequenceList = new ArrayList<>();
 
-        // ex) sequenceList = [1,2,3,4,4,6,9] -> beginAndEndIndex = [0,3]
-        // ex) sequenceList = [1,3,4,5,9,13,21,22] -> beginAndEndIndex = [1,3,6,7]
-        // ex) sequenceList = [1,3,2,4,7,1,0,1,2,3,3,2,6] -> beginAndEndIndex = [6,9]
-        // ex) sequenceList = [1,2,3,7,8,23,24,1,3] -> beginAndEndIndex = [0,2,3,4,5,6]
-        // 연속되는 부분이 있다면 해당 index 값을 beginAndEndIndex 리스트에 넣기
+        // ex) sequenceList = [19] -> continuousSequenceList = [[]]
+        // ex) sequenceList = [22,25] -> continuousSequenceList = [[]]
+        // ex) sequenceList = [1,2,3,4,4,6,9] -> continuousSequenceList = [[1,2,3,4]]
+        // ex) sequenceList = [1,3,4,5,9,13,21,22] -> continuousSequenceList = [[3,4,5], [21,22]]
+        // ex) sequenceList = [1,3,2,4,7,1,0,1,2,3,3,2,6] -> continuousSequenceList = [[0,1,2,3]]
+        // ex) sequenceList = [1,2,3,7,8,23,24,1,3] -> continuousSequenceList = [[1,2,3], [7,8], [23, 24]]
+        // 연속되는 부분이 있다면 해당 sequence 값을 continuousSequenceList 리스트에 넣기
+
+        // sequenceList의 인자가 하나인 경우
         if (sequenceList.size() < 2) {
-            return beginAndEndIndex;
+            return continuousSequenceList;
         }
 
-        int startIndex = 0;
-        // 연속되는 구간의 시작과 끝 여부를 판단
-        boolean isSequential = false;
+        List<Long> continuousSequences = new ArrayList<>(List.of(sequenceList.get(0)));
 
-        for (int i = 0; i < sequenceList.size() - 1; i++) {
-            // 두 값이 연속적인지 여부를 판단
-            boolean isContinuous = sequenceList.get(i + 1) - sequenceList.get(i) == 1;
+        for (int i = 1; i < sequenceList.size(); i++) {
+            Long currentSequence = sequenceList.get(i);
+            Long previousSequence = sequenceList.get(i - 1);
 
-            // i+1 값과 연속성 존재 + 첫 연속 구간
-            if (isContinuous && !isSequential) {
-                startIndex = i;
-                isSequential = true;
+            if (currentSequence.equals(previousSequence + 1)) {
+                continuousSequences.add(currentSequence);
+                continue;
             }
 
-            // i+1 값과 연속성 존재하지 않음 + 연속구간 끝
-            if (!isContinuous && isSequential) {
-                beginAndEndIndex.add(startIndex);
-                beginAndEndIndex.add(i);
-                isSequential = false;
-            }
+            addContinuousSequencesIfValid(continuousSequenceList, continuousSequences);
+            continuousSequences = new ArrayList<>(List.of(currentSequence));
         }
 
-        if (isSequential) {
-            beginAndEndIndex.add(startIndex);
-            beginAndEndIndex.add(sequenceList.size() - 1);
-        }
+        addContinuousSequencesIfValid(continuousSequenceList, continuousSequences);
 
-        return beginAndEndIndex;
+        return continuousSequenceList;
     }
 
-    private List<GeofenceLocation> filterGeofenceLocationList(List<GeofenceLocation> sortedgeofenceLocationList, Map<String, List<Integer>> indexMap) {
-        List<GeofenceLocation> geofenceLocationList = new ArrayList<>();
-        Set<String> keySet = indexMap.keySet();
-
-        for (String routeId : keySet) {
-            List<GeofenceLocation> containRouteIdList = new ArrayList<>();
-            List<Integer> indexList = indexMap.get(routeId);
-
-            // routeId 뒤에 _? 가 존재하는 경우 제거
-            if (routeId.contains("_")) {
-                routeId = routeId.substring(0, routeId.indexOf("_"));
-            }
-
-            // sortedGeofenceLocationList에서 geofenceLocation을 추출해서 하나하나 확인하기
-            for (GeofenceLocation geofenceLocation : sortedgeofenceLocationList) {
-                // 만약 포함한지 않는다면
-                if (!geofenceLocation.stationBusInfo().contains(routeId)) {
-                    continue;
-                }
-
-                // 만약 포함한다면
-                if (geofenceLocation.stationBusInfo().contains(routeId)) {
-                    containRouteIdList.add(geofenceLocation);
-                }
-            }
-
-            // indexList에 존재하는 index를 활용하여 containList indexing하기
-            List<GeofenceLocation> sequentialcontainRouteIdList = indexcontainRouteIdList(containRouteIdList, indexList);
-            geofenceLocationList.addAll(sequentialcontainRouteIdList);
+    private void addContinuousSequencesIfValid(List<List<Long>> continuousSequenceList, List<Long> continuousSequences) {
+        if (continuousSequences.size() > 1) {
+            continuousSequenceList.add(continuousSequences);
         }
-
-        return geofenceLocationList;
     }
 
-    private List<GeofenceLocation> indexcontainRouteIdList(List<GeofenceLocation> containRouteIdList, List<Integer> indexList) {
-        List<GeofenceLocation> sequentialcontainRouteIdList = new ArrayList<>();
+    private String assignKeyName(Map<String, List<Long>> continuousBusInfoMap, String routeId) {
+        String keyName = "";
 
-        for (int i = 0; i < indexList.size(); i += 2) {
-            Integer startIndex = indexList.get(i);
-            Integer endIndex = indexList.get(i + 1);
-
-            List<GeofenceLocation> localList = containRouteIdList.subList(startIndex, endIndex + 1);
-
-            sequentialcontainRouteIdList.addAll(localList);
+        if (routeId.contains("_")) {
+            List<String> routeIdAndCount = Arrays.asList(routeId.split("_"));
+            routeId = routeIdAndCount.get(0);
         }
-        return sequentialcontainRouteIdList;
+
+        // 만약 있으면 _?, 없으면 _1
+        Set<String> keySet = continuousBusInfoMap.keySet();
+
+        // routeId가 포함된 패턴
+        String pattern = ".*" + routeId + ".*";
+
+        if (keySet.stream().anyMatch(id -> id.matches(pattern))) {
+            Long count = findMaxCount(continuousBusInfoMap, routeId);
+            keyName = routeId + "_" + (count+1);
+        }
+
+        if (keySet.stream().noneMatch(id -> id.matches(pattern))) {
+            keyName = routeId + "_1";
+        }
+
+        return keyName;
     }
 
     private Long stringToLong(String string) {
