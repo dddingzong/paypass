@@ -7,6 +7,7 @@ import project.paypass.domain.GeofenceLocation;
 import project.paypass.repository.GeofenceLocationRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -49,12 +50,12 @@ public class GeofenceService {
         // mainId로 geofenceLocation 조회
         List<GeofenceLocation> geofenceLocations = geofenceLocationRepository.findByMainId(mainId);
 
-        List<GeofenceLocation> basicGeofenceLocationList = basicAlgorithmService.algorithmStart(geofenceLocations);
-        List<GeofenceLocation> averageTimeGeofenceLocationList = averageTimeAlgorithmService.algorithmStart(basicGeofenceLocationList);
-        List<GeofenceLocation> duplicationDeleteGeofenceLocationList = duplicateDeleteAlgorithm.algorithmStart(averageTimeGeofenceLocationList);
+        // 알고리즘 실행
+        Map<String, List<Long>> basicMap = basicAlgorithmService.algorithmStart(geofenceLocations);
+        Map<String, List<Long>> averageTimeMap = averageTimeAlgorithmService.algorithmStart(basicMap);
+        List<GeofenceLocation> duplicationDeleteGeofenceLocationList = duplicateDeleteAlgorithm.algorithmStart(averageTimeMap);
 
         return duplicationDeleteGeofenceLocationList;
     }
-
 
 }

@@ -5,13 +5,14 @@ import org.springframework.stereotype.Service;
 import project.paypass.domain.GeofenceLocation;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 public class AverageTimeAlgorithmService {
 
-    public List<GeofenceLocation> algorithmStart(List<GeofenceLocation> geofenceLocations){
+    public Map<String, List<Long>> algorithmStart(Map<String, List<Long>> BusInfoMap){
 
-        return geofenceLocations;
+        return BusInfoMap;
     }
 }
