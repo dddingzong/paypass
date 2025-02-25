@@ -56,8 +56,15 @@ public class GeofenceLocation {
         return this.busInfo;
     }
 
-    public String checkBoard(){
-        return this.board;
+    public Long getStationNumber(){
+        return this.stationNumber;
     }
 
+    public LocalDateTime getFenceOutTime() {
+        return fenceOutTime;
+    }
+
+    public LocalDateTime getFenceInTime() {
+        return fenceInTime;
+    }
 }
