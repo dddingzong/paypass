@@ -42,16 +42,48 @@ public class DuplicateDeleteAlgorithm {
         // stationMap 정류장 중복 제거 알고리즘 작동 (시간체크필요)
         // stationNumberList와 시간이 같다는 조건은 버스 후보 조건이다.
         deleteEqualStation(stationMap,timeMap);
+        // -> 애초에 같은 값은 뭐 건들게 없는데?
+        // 그냥 이거 기반으로 geofenceLocation으로 된 최종 Map 만들면 끝 아님?
+        // Map<List<routeId>, List<geofenceLocation>>이렇게 마무리?
+
 
         return null;
     }
 
     private void deleteEqualStation(Map<String, List<Long>> stationMap, Map<String, List<Map<String, LocalDateTime>>> timeMap) {
         // stationList가 완전히 동일한 경우에만 작동
-        // 1. 시간마저 동일 -> 통합 (후보군으로 취급)
-        // 2. 시간 다름 -> 다른 상황으로 취급
-        // 3. 시간 걸침? ->
-        // 얘도 null check 해야된다.
+        for (var routeIdAndStationNumbers : stationMap.entrySet()) {
+            String routeIdOuter = routeIdAndStationNumbers.getKey();
+            List<Long> stationNumberListOuter = routeIdAndStationNumbers.getValue();
+
+            for (var routeIdAndStationNumbersInner : stationMap.entrySet()) {
+                String routeIdInner = routeIdAndStationNumbersInner.getKey();
+                List<Long> stationNumberListInner = routeIdAndStationNumbersInner.getValue();
+
+                // stationNumberList는 같지만 routeId는 다른경우
+                if (stationNumberListOuter.equals(stationNumberListInner)
+                        && !routeIdOuter.equals(routeIdInner)){
+                    checkTimeInEqual(routeIdOuter, routeIdInner, timeMap);
+                }
+
+            }
+        }
+    }
+
+    private void checkTimeInEqual(String routeIdOuter, String routeIdInner, Map<String, List<Map<String, LocalDateTime>>> timeMap) {
+        int listSizeOuter = timeMap.get(routeIdOuter).size();
+        LocalDateTime fenceInTimeOuter = timeMap.get(routeIdOuter).get(0).get("fenceInTime");
+        LocalDateTime fenceOutTimeOuter = timeMap.get(routeIdOuter).get(listSizeOuter - 1).get("fenceOuterTime");
+
+        int listSizeInner = timeMap.get(routeIdInner).size();
+        LocalDateTime fenceInTimeInner = timeMap.get(routeIdInner).get(0).get("fenceInTime");
+        LocalDateTime fenceOutTimeInner = timeMap.get(routeIdInner).get(listSizeInner - 1).get("fenceOutTime");
+
+        // 1. Outer의 fenceOutTime이 null Inner의 fenceOutTime도 null -> 둘은 같은 케이스로 간주
+        // 2. Outer의 fenceOutTime이 null Inner의 fenceOutTime은 인수값 -> 둘은 다른 케이스
+        // 3. Outer의 fenceOutTime이 인수값 Inner의 fenceOutTime은 null -> 둘은 다른 케이스
+        // 4. 둘다 인수값 -> fenceInTime과 fenceOutTime을 비교하여 같은지 확인
+
     }
 
     private Map<String, List<Long>> makeStationMap(List<GeofenceLocation> geofenceLocations, Map<String, List<Long>> averageTimeMap) {
@@ -206,7 +238,7 @@ public class DuplicateDeleteAlgorithm {
                 if (Collections.indexOfSubList(stationNumberList, stationNumberListInner) != -1
                         && !stationNumberList.equals(stationNumberListInner)) {
                     // 시간도 포함하는지 확인
-                    String deleteKey = checkTime(routeId, routeIdInner, timeMap);
+                    String deleteKey = checkTimeInContain(routeId, routeIdInner, timeMap);
                     deleteKeyList.add(deleteKey);
                 } // end if
             }
@@ -214,14 +246,14 @@ public class DuplicateDeleteAlgorithm {
 
         for (String routeId : deleteKeyList) {
             if (routeId.equals("-1")) continue;
-            if (routeId == null) throw new RuntimeException("checkTime 메서드에서 오류 발생");
+            if (routeId == null) throw new RuntimeException("checkTimeInContain 메서드에서 오류 발생");
             stationMap.remove(routeId);
             timeMap.remove(routeId);
         }
     }
 
-    private String checkTime(String routeId, String routeIdInner, Map<String, List<Map<String, LocalDateTime>>> timeMap) {
-        System.out.println("checkTime method 실행 routeId = " + routeId + "routeIdInner = " + routeIdInner);
+    private String checkTimeInContain(String routeId, String routeIdInner, Map<String, List<Map<String, LocalDateTime>>> timeMap) {
+        System.out.println("checkTimeInContain method 실행 routeId = " + routeId + "routeIdInner = " + routeIdInner);
 
         // 해당 routeId의 시간을 비교해서 시간마저 포함한다면 삭제 대상
         // 비교는 가장 처음 값의 fenceInTime과 가장 마지막 값의 fenceOutTime으로 비교한다.
