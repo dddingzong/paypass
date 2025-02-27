@@ -12,6 +12,7 @@ import project.paypass.service.GeofenceService;
 import project.paypass.service.StationService;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -38,14 +39,21 @@ public class GeofenceController {
         log.info("geofenceLocation 데이터를 생성 후 저장했습니다.");
         log.info("geofenceLocation: {}", geofenceLocation);
 
-        // 메인 알고리즘 실행
-        geofenceService.startAlgorithm(mainId);
-
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/algorithmStart")
+    public void algorithmStart(@RequestBody Map<String, String> payload){ // 일단 dto를 사용하지 않고 Map으로 해결
 
-    @PostMapping("userFenceOut")
+        String mainId = payload.get("mainId");
+        log.info("메인 알고리즘을 실행합니다.");
+
+        geofenceService.startAlgorithm(mainId);
+
+    }
+
+
+    @PostMapping("/userFenceOut")
     public ResponseEntity<Void> userGeofenceOut(@RequestBody UserGeofenceDto userGeofenceDto){
         log.info("사용자가 geofence에서 이탈했기 때문에 userGeofenceOut method를 실행합니다.");
 
