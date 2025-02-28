@@ -34,7 +34,6 @@ public class DuplicateDeleteAlgorithm {
         log.info("stationMap = " + stationMap);
         log.info("continuousGeofenceLocationMap = " + continuousGeofenceLocationMap);
 
-
         // routeId: Map<> fenceInTime, fenceOutTime 형식의 Map 작성
         Map<String, List<Map<String, LocalDateTime>>> timeMap = makeTimeMap(continuousGeofenceLocationMap);
         log.info("timeMap = " + timeMap);
@@ -246,8 +245,8 @@ public class DuplicateDeleteAlgorithm {
         } // end for
 
         for (String routeId : deleteKeyList) {
-            if (routeId.equals("-1")) continue;
             if (routeId == null) throw new RuntimeException("checkTimeInContain 메서드에서 오류 발생");
+            if (routeId.equals("-1")) continue;
             stationMap.remove(routeId);
             timeMap.remove(routeId);
             continuousGeofenceLocationMap.remove(routeId);
@@ -285,10 +284,14 @@ public class DuplicateDeleteAlgorithm {
             return "-1";
         }
 
-        // 4
+        // 4 시간을 포함한다면 삭제 리스트에 포함
         if (fenceOutTimeOuter != null && fenceOutTimeInner != null) {
             if (fenceInTimeOuter.compareTo(fenceInTimeInner) < 0 && fenceOutTimeOuter.compareTo(fenceOutTimeInner) > 0) {
                 return routeIdInner;
+            }
+            // 시간을 포함하지 않는다면 스킵
+            if (fenceInTimeOuter.compareTo(fenceOutTimeInner) > 0 || fenceOutTimeOuter.compareTo(fenceInTimeInner) < 0){
+                return "-1";
             }
         }
 
