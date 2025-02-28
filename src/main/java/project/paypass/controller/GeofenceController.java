@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import project.paypass.domain.GeofenceLocation;
 import project.paypass.domain.dto.UserGeofenceDto;
 import project.paypass.service.GeofenceService;
+import project.paypass.service.LogService;
 import project.paypass.service.StationService;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class GeofenceController {
 
     private final StationService stationService;
     private final GeofenceService geofenceService;
+    private final LogService logService;
 
     @PostMapping("/userFenceIn")
     public ResponseEntity<Void> userGeofenceIn(@RequestBody UserGeofenceDto userGeofenceDto){
@@ -48,8 +50,10 @@ public class GeofenceController {
         String mainId = payload.get("mainId");
         log.info("메인 알고리즘을 실행합니다.");
 
-        geofenceService.startAlgorithm(mainId);
+        Map<List<GeofenceLocation>, List<String>> resultMap = geofenceService.startAlgorithm(mainId);
 
+        // 이후 데이터 저장
+        logService.saveLogData(mainId, resultMap);
     }
 
 
