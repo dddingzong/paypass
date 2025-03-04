@@ -8,8 +8,14 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Entity
-@ToString
 public class GeofenceLocation {
+
+    @Override
+    public String toString() {
+        return "GeofenceLocation{" +
+                "stationNumber=" + stationNumber +
+                '}';
+    }
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,6 +57,10 @@ public class GeofenceLocation {
 
     public String stationBusInfo(){
         return this.busInfo;
+    }
+
+    public Long geofenceLocationId(){
+        return this.id;
     }
 
     public Long getStationNumber(){
