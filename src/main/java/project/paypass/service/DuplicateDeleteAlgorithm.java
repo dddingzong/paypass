@@ -269,6 +269,15 @@ public class DuplicateDeleteAlgorithm {
         // 2. Outer가 인자값 Inner은 null -> Inner가 더 최근인 경우 -> 스킵
         // 4. 둘 다 인자값 -> 포함 여부 확인 필요
 
+//        log 확인용
+//        System.out.println("routeId = " + routeId);
+//        System.out.println("fenceInTimeOuter = " + fenceInTimeOuter);
+//        System.out.println("fenceOutTimeOuter = " + fenceOutTimeOuter);
+//        System.out.println("routeIdInner = " + routeIdInner);
+//        System.out.println("fenceInTimeInner = " + fenceInTimeInner);
+//        System.out.println("fenceOutTimeInner = " + fenceOutTimeInner);
+
+
         // 1.
         if (fenceOutTimeOuter == null && fenceOutTimeInner == null) {
             return routeIdInner;
@@ -286,7 +295,7 @@ public class DuplicateDeleteAlgorithm {
 
         // 4 시간을 포함한다면 삭제 리스트에 포함
         if (fenceOutTimeOuter != null && fenceOutTimeInner != null) {
-            if (fenceInTimeOuter.compareTo(fenceInTimeInner) < 0 && fenceOutTimeOuter.compareTo(fenceOutTimeInner) > 0) {
+            if (fenceInTimeOuter.compareTo(fenceInTimeInner) <= 0 && fenceOutTimeOuter.compareTo(fenceOutTimeInner) >= 0) {
                 return routeIdInner;
             }
             // 시간을 포함하지 않는다면 스킵
