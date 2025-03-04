@@ -153,39 +153,65 @@ public class DuplicateDeleteAlgorithm {
         for (var routeIdAndGeofenceLocationList : geofenceLocationMap.entrySet()) {
             String routeId = routeIdAndGeofenceLocationList.getKey();
             List<GeofenceLocation> geofenceLocationList = routeIdAndGeofenceLocationList.getValue();
-            // 값 추가할때 startIndex 맞추기 위해 존재
-            int deleteStartIndex = 0;
 
             String pattern = ".*" + routeId + ".*";
 
             if (geofenceLocationList.size() < 2) continue;
 
             List<Long> stationNumberList = makeStationNumberList(geofenceLocationList);
+            List<Long> idList = makeIdList(geofenceLocationList);
 
-            for (var routeIdAndStationNumberList : stationMap.entrySet()) {
-                String routeIdInStationMap = routeIdAndStationNumberList.getKey();
-                List<Long> stationNumberListInStationMap = routeIdAndStationNumberList.getValue();
+            List<String> routeIdList = geofenceLocationMap.keySet().stream()
+                    .sorted()
+                    .collect(Collectors.toList());
 
-                if (routeIdInStationMap.matches(pattern)) {
-                    // 있다면 continuousGeofenceLocationMap에 추가 + stationNumberList에서 값 삭제
-                    if (Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap) != -1) {
-                        int startIndex = Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap);
-                        // continuousGeofenceLocationMap에 값 추가
-                        continuousGeofenceLocationMap.put(routeIdInStationMap, geofenceLocationList.subList(startIndex + deleteStartIndex, startIndex + deleteStartIndex + stationNumberListInStationMap.size()));
-                        // 중복 방지를 위해 List에서 확인된 값 삭제
-                        stationNumberList.subList(startIndex, startIndex + stationNumberListInStationMap.size()).clear();
-                        // stationMap에 존재하는 stationNumberList의 size만큼 추가 (geofenceLocationList에 적용하기 위함)
-                        deleteStartIndex += stationNumberListInStationMap.size();
-                        continue;
+            for (String routeIdInRouteIdList : routeIdList){
+                int count = 1;
+
+                while (true) {
+                    String routeIdInStationMap = routeIdInRouteIdList + "_" + count;
+
+                    if (!stationMap.containsKey(routeIdInStationMap)) {
+                        break;
                     }
 
-                    // stationNumberList에는 없는데 stationMap에는 있는 경우
-                    // -> stationMap 삭제 (routeId와 stationNumber + 시간이 겹치는 경우)
-                    if (Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap) == -1) {
-                        deleteKeyList.add(routeIdInStationMap);
-                    }
-                } // match if문 종료
-            } // for문 종료
+                    List<Long> stationNumberListInStationMap = stationMap.get(routeIdInStationMap);
+
+                    if (routeIdInStationMap.matches(pattern)) {
+                        // 있다면 continuousGeofenceLocationMap에 추가 + stationNumberList에서 값 삭제
+                        if (Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap) != -1) {
+//                            System.out.println("routeIdInStationMap = " + routeId);
+//                            System.out.println("stationNumberList = " + stationNumberList);
+//                            System.out.println("routeIdInStationMap = " + routeIdInStationMap);
+//                            System.out.println("stationNumberListInStationMap = " + stationNumberListInStationMap);
+//                            System.out.println(" ");
+                            int startIndex = Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap);
+
+                            // continuousGeofenceLocationMap에 값 추가
+                            List<Long> idListForPut = idList.subList(startIndex, startIndex + stationNumberListInStationMap.size());
+                            List<GeofenceLocation> putList = makePutList(idListForPut ,geofenceLocationList);
+                            continuousGeofenceLocationMap.put(routeIdInStationMap, putList);
+
+                            // 중복 방지를 위해 List에서 확인된 값 삭제
+                            stationNumberList.subList(startIndex, startIndex + stationNumberListInStationMap.size()).clear();
+                            idList.subList(startIndex, startIndex + stationNumberListInStationMap.size()).clear();
+                            // stationMap에 존재하는 stationNumberList의 size만큼 추가 (geofenceLocationList에 적용하기 위함)
+                            count++;
+                            continue;
+                        }
+
+                        // stationNumberList에는 없는데 stationMap에는 있는 경우
+                        // -> stationMap 삭제 (routeId와 stationNumber + 시간이 겹치는 경우)
+                        if (Collections.indexOfSubList(stationNumberList, stationNumberListInStationMap) == -1) {
+                            deleteKeyList.add(routeIdInStationMap);
+                        }
+
+                    } // match if문 종료
+
+                    count++;
+                }
+            }
+
         }
         // 중복된 부분 stationMap에서 삭제
         for (String routeId : deleteKeyList) {
@@ -195,10 +221,28 @@ public class DuplicateDeleteAlgorithm {
         return continuousGeofenceLocationMap;
     }
 
+
+
     private List<Long> makeStationNumberList(List<GeofenceLocation> geofenceLocationList) {
         return geofenceLocationList.stream()
                 .map(GeofenceLocation::getStationNumber)
                 .collect(Collectors.toList());
+    }
+
+    private List<Long> makeIdList(List<GeofenceLocation> geofenceLocationList) {
+        return geofenceLocationList.stream()
+                .map(GeofenceLocation::geofenceLocationId)
+                .collect(Collectors.toList());
+    }
+
+    private List<GeofenceLocation> makePutList(List<Long> idListForPut, List<GeofenceLocation> geofenceLocationList) {
+        List<GeofenceLocation> putList = geofenceLocationList.stream()
+                .filter(geofenceLocation -> idListForPut.contains(geofenceLocation.geofenceLocationId())) // ID가 포함된 경우만 필터링
+                .collect(Collectors.toList()); // 리스트로 변환
+
+        if (putList.size() != idListForPut.size()) throw new RuntimeException("makePutList에서 오류 발생");
+
+        return putList;
     }
 
     private Map<String, List<Map<String, LocalDateTime>>> transformGeofenceLocationToTime(Map<String, List<GeofenceLocation>> continuousGeofenceLocationMap) {
@@ -276,7 +320,6 @@ public class DuplicateDeleteAlgorithm {
 //        System.out.println("routeIdInner = " + routeIdInner);
 //        System.out.println("fenceInTimeInner = " + fenceInTimeInner);
 //        System.out.println("fenceOutTimeInner = " + fenceOutTimeInner);
-
 
         // 1.
         if (fenceOutTimeOuter == null && fenceOutTimeInner == null) {
