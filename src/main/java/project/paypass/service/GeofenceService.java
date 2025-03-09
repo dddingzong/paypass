@@ -52,9 +52,8 @@ public class GeofenceService {
 
         // 알고리즘 실행
         Map<String, List<Long>> basicMap = basicAlgorithmService.algorithmStart(geofenceLocations);
-        Map<String, List<Long>> averageTimeMap = averageTimeAlgorithmService.algorithmStart(basicMap);
+        Map<String, List<Long>> averageTimeMap = averageTimeAlgorithmService.algorithmStart(basicMap, geofenceLocations);
         Map<List<GeofenceLocation>, List<String>> resultMap = duplicateDeleteAlgorithm.algorithmStart(geofenceLocations, averageTimeMap);
-
         return resultMap;
     }
 
