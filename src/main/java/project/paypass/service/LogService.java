@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import project.paypass.domain.DetailLog;
 import project.paypass.domain.GeofenceLocation;
 import project.paypass.domain.Log;
+import project.paypass.domain.dto.DetailLogDto;
 import project.paypass.domain.dto.LogDto;
 import project.paypass.repository.DetailLogRepository;
 import project.paypass.repository.LogRepository;
@@ -87,5 +88,23 @@ public class LogService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<DetailLogDto> findByMainIdAndLogId(String mainId, Long logId) {
+        List<DetailLog> detaillogs = detailLogRepository.findByMainIdAndLogId(mainId, logId);
+
+        return detaillogs.stream()
+                .map(detaillog -> {
+                    System.out.println("로그 ID: " + detaillog.getId()); // 각 로그의 ID를 출력해서 확인
+                    return new DetailLogDto(
+                            detaillog.getId(),
+                            detaillog.getMainId(),
+                            detaillog.getFenceInTime(),
+                            detaillog.getFenceOutTime(),
+                            detaillog.getStationNumber()
+                    );
+                })
+                .collect(Collectors.toList());
+
     }
 }
