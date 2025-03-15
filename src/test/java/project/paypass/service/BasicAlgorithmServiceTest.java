@@ -22,10 +22,19 @@ class BasicAlgorithmServiceTest {
 
     @Test
     @DisplayName("테스트_데이터_1번_기본알고리즘")
-    void algorithmStart() {
+    void algorithmStartTestOne() {
         // then
         Map<String, List<Long>> busInfoMap = basicAlgorithmService.algorithmStart(testCase1_GeofenceLocation);
         // given
         Assertions.assertThat(busInfoMap).isEqualTo(testCase1_basicAlgorithm);
+    }
+
+    @Test
+    @DisplayName("테스트_데이터_2번_기본알고리즘")
+    void algorithmStartTestTwo() {
+        // then
+        Map<String, List<Long>> busInfoMap = basicAlgorithmService.algorithmStart(testCase2_GeofenceLocation);
+        // given
+        Assertions.assertThat(busInfoMap).isEqualTo(testCase2_basicAlgorithm);
     }
 }

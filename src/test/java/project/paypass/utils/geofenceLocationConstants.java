@@ -79,10 +79,148 @@ public class geofenceLocationConstants {
             "{100100057,60},{100100093,30},{100100260,51},{100100454,54},{113000002,66},{114000002,34}"
     );
 
+    public static final GeofenceLocation test2_geofenceLocation1 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            1L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 15:42:31.000000", formatter),
+            LocalDateTime.parse("2025-03-04 15:44:31.000000", formatter),
+            116000094L,
+            "{100100298,26}"
+    );
 
+    public static final GeofenceLocation test2_geofenceLocation2 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            2L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 15:54:59.000000", formatter),
+            LocalDateTime.parse("2025-03-04 15:56:39.000000", formatter),
+            116000102L,
+            "{100100298,27},{100100298,47},{100100451,12},{100100451,100},{100100453,16},{100100453,76},{100100601,43},{116000002,38}"
+    );
 
+    public static final GeofenceLocation test2_geofenceLocation3 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            3L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 16:06:43.000000", formatter),
+            LocalDateTime.parse("2025-03-04 16:08:43.000000", formatter),
+            116000104L,
+            "{100100298,28},{100100298,48},{100100451,13},{100100451,101},{100100453,61},{100100453,77},{100100601,44},{116000002,39}"
+    );
 
+    public static final GeofenceLocation test2_geofenceLocation4 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            4L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 16:22:47.000000", formatter),
+            LocalDateTime.parse("2025-03-04 16:24:47.000000", formatter),
+            116000202L,
+            "{100100298,35},{100100298,42},{100100453,11},{100100453,68}"
+    );
 
+    public static final GeofenceLocation test2_geofenceLocation5 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            5L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 16:34:50.000000", formatter),
+            LocalDateTime.parse("2025-03-04 16:36:50.000000", formatter),
+            116000101L,
+            "{100100298,36},{100100298,43},{100100453,12},{100100453,69}"
+    );
 
+    public static final GeofenceLocation test2_geofenceLocation6 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            6L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 16:46:54.000000", formatter),
+            LocalDateTime.parse("2025-03-04 16:48:54.000000", formatter),
+            116000100L,
+            "{100100298,37},{100100298,44},{100100453,13},{100100453,70}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation7 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            7L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 17:02:58.000000", formatter),
+            LocalDateTime.parse("2025-03-04 17:04:58.000000", formatter),
+            116000095L,
+            "{100100298,54}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation8 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            8L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 17:14:58.000000", formatter),
+            LocalDateTime.parse("2025-03-04 17:16:58.000000", formatter),
+            116000093L,
+            "{100100298,55},{100100453,19}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation9 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            9L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 17:26:58.000000", formatter),
+            LocalDateTime.parse("2025-03-04 17:30:58.000000", formatter),
+            116000118L,
+            "{100100298,61},{100100312,62},{100100313,50}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation10 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            10L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 17:45:09.000000", formatter),
+            LocalDateTime.parse("2025-03-04 17:46:09.000000", formatter),
+            213000158L,
+            "{100100298,62},{100100312,63},{100100313,51}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation11 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            11L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 17:54:09.000000", formatter),
+            LocalDateTime.parse("2025-03-04 17:55:09.000000", formatter),
+            213000033L,
+            "{100100298,63},{100100312,64},{100100313,52}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation12 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            12L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 18:04:09.000000", formatter),
+            LocalDateTime.parse("2025-03-04 18:06:09.000000", formatter),
+            213000045L,
+            "{100100298,66},{100100313,55}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation13 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            13L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 18:16:09.000000", formatter),
+            LocalDateTime.parse("2025-03-04 18:18:09.000000", formatter),
+            213000128L,
+            "{100100298,68},{100100313,57}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation14 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            14L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 18:36:11.000000", formatter),
+            LocalDateTime.parse("2025-03-04 18:38:11.000000", formatter),
+            102000007L,
+            "{100100079,41},{100100114,59},{100100410,63},{100100565,56}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation15 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            15L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 18:46:11.000000", formatter),
+            LocalDateTime.parse("2025-03-04 18:48:11.000000", formatter),
+            102000011L,
+            "{100100079,43},{100100080,46},{100100114,61},{100100410,65},{100100447,43},{100100565,58},{111000016,130}"
+    );
+
+    public static final GeofenceLocation test2_geofenceLocation16 = GeofenceLocation.createGeofenceLocationEntityForTest(
+            16L,
+            "chungjongin@gmail.com",
+            LocalDateTime.parse("2025-03-04 18:56:11.000000", formatter),
+            LocalDateTime.parse("2025-03-04 18:58:11.000000", formatter),
+            220000006L,
+            "{100100070,88},{100100083,64},{100100410,96},{100100574,80}"
+    );
 
 }

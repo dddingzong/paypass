@@ -23,10 +23,19 @@ class AverageTimeAlgorithmServiceTest {
 
     @Test
     @DisplayName("테스트_데이터_1번_평균시간알고리즘")
-    void algorithmStart() {
+    void algorithmStartTestOne() {
         // when
         Map<String, List<Long>> averageMap = averageTimeAlgorithmService.algorithmStart(testCase1_basicAlgorithm, testCase1_GeofenceLocation);
         // then
         Assertions.assertThat(averageMap).isEqualTo(testCase1_AverageAlgorithm);
+    }
+
+    @Test
+    @DisplayName("테스트_데이터_2번_평균시간알고리즘")
+    void algorithmStartTestTwo() {
+        // when
+        Map<String, List<Long>> averageMap = averageTimeAlgorithmService.algorithmStart(testCase2_basicAlgorithm, testCase2_GeofenceLocation);
+        // then
+        Assertions.assertThat(averageMap).isEqualTo(testCase2_basicAlgorithm);
     }
 }

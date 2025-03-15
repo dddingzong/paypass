@@ -23,10 +23,19 @@ class DuplicateDeleteAlgorithmTest {
 
     @Test
     @DisplayName("테스트_데이터_1번_중복제거알고리즘")
-    void algorithmStart() {
+    void algorithmStartTestOne() {
         // when
         Map<List<GeofenceLocation>, List<String>> resultMap = duplicateDeleteAlgorithm.algorithmStart(testCase1_AverageAlgorithm, testCase1_GeofenceLocation);
         // then
         Assertions.assertThat(resultMap).isEqualTo(testCase1_resultMap);
+    }
+
+    @Test
+    @DisplayName("테스트_데이터_2번_중복제거알고리즘")
+    void algorithmStartTestTwo() {
+        // when
+        Map<List<GeofenceLocation>, List<String>> resultMap = duplicateDeleteAlgorithm.algorithmStart(testCase2_basicAlgorithm, testCase2_GeofenceLocation);
+        // then
+        Assertions.assertThat(resultMap).isEqualTo(testCase2_resultMap);
     }
 }
