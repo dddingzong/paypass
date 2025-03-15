@@ -75,4 +75,16 @@ public class GeofenceLocation {
         return this.fenceInTime;
     }
 
+    public static GeofenceLocation createGeofenceLocationEntityForTest(Long id, String mainId, LocalDateTime fenceInTime, LocalDateTime fenceOutTime, Long stationNumber, String busInfo){
+        return new GeofenceLocation(id, mainId, fenceInTime, fenceOutTime, stationNumber, busInfo);
+    }
+
+    private GeofenceLocation(Long id, String mainId, LocalDateTime fenceInTime, LocalDateTime fenceOutTime, Long stationNumber, String busInfo) {
+        this.id = id;
+        this.mainId = mainId;
+        this.fenceInTime = fenceInTime;
+        this.fenceOutTime = fenceOutTime;
+        this.stationNumber = stationNumber;
+        this.busInfo = busInfo;
+    }
 }
