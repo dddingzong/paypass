@@ -54,7 +54,8 @@ public class GeofenceService {
         return resultMap;
     }
 
-    private Map<List<GeofenceLocation>, List<String>> mainAlgorithm(List<GeofenceLocation> geofenceLocations){
+    @Transactional
+    public Map<List<GeofenceLocation>, List<String>> mainAlgorithm(List<GeofenceLocation> geofenceLocations){
         // 알고리즘 실행
         Map<String, List<Long>> basicMap = basicAlgorithmService.algorithmStart(geofenceLocations);
         Map<String, List<Long>> averageTimeMap = averageTimeAlgorithmService.algorithmStart(basicMap, geofenceLocations);
