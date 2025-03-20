@@ -22,8 +22,7 @@ public class Constants {
             test1_geofenceLocation10
     ));
 
-
-    public static final Map<String, List<Long>> testCase1_basicAlgorithm = Map.ofEntries(
+    public static final Map<String, List<Long>> testCase1_basicAlgorithm = new TreeMap<>(Map.ofEntries(
             Map.entry("100100057_1", List.of(27L, 28L, 29L)),
             Map.entry("100100057_2", List.of(31L, 32L, 33L, 34L)),
             Map.entry("100100057_3", List.of(59L, 60L)),
@@ -44,9 +43,9 @@ public class Constants {
             Map.entry("114000002_1", List.of(80L, 81L, 82L)),
             Map.entry("114000002_2", List.of(84L, 85L, 86L, 87L)),
             Map.entry("114000002_3", List.of(33L, 34L))
-    );
+    ));
 
-    public static final Map<String, List<Long>> testCase1_AverageAlgorithm = Map.ofEntries(
+    public static final Map<String, List<Long>> testCase1_AverageAlgorithm = new TreeMap<>(Map.ofEntries(
             Map.entry("100100057_1", List.of(27L, 28L, 29L)),
             Map.entry("100100057_2", List.of(31L, 32L, 33L, 34L)),
             Map.entry("100100083_1", List.of(48L, 49L, 50L)),
@@ -63,7 +62,7 @@ public class Constants {
             Map.entry("113000002_2", List.of(60L, 61L)),
             Map.entry("114000002_1", List.of(80L, 81L, 82L)),
             Map.entry("114000002_2", List.of(84L, 85L, 86L, 87L))
-    );
+    ));
 
     public static final Map<List<GeofenceLocation>, List<String>> testCase1_resultMap = Map.ofEntries(
             Map.entry(List.of(test1_geofenceLocation1, test1_geofenceLocation2, test1_geofenceLocation3),
@@ -93,7 +92,7 @@ public class Constants {
             test2_geofenceLocation16
     ));
 
-    public static final Map<String, List<Long>> testCase2_basicAlgorithm = Map.ofEntries(
+    public static final Map<String, List<Long>> testCase2_basicAlgorithm = new TreeMap<>(Map.ofEntries(
             Map.entry("100100298_1", List.of(26L, 27L, 28L)),
             Map.entry("100100298_2", List.of(35L, 36L, 37L)),
             Map.entry("100100298_3", List.of(54L, 55L)),
@@ -105,7 +104,7 @@ public class Constants {
             Map.entry("100100453_2", List.of(68L, 69L, 70L)),
             Map.entry("100100601_1", List.of(43L, 44L)),
             Map.entry("116000002_1", List.of(38L, 39L))
-    );
+    ));
 
     public static final Map<List<GeofenceLocation>, List<String>> testCase2_resultMap = Map.ofEntries(
             Map.entry(List.of(test2_geofenceLocation1, test2_geofenceLocation2, test2_geofenceLocation3),
