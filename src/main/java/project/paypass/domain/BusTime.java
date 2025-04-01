@@ -20,7 +20,4 @@ public class BusTime {
 
     @Column(nullable = false)
     private String arrivalTime;
-
-    @Column(nullable = false)
-    private String stationNumber;
 }
