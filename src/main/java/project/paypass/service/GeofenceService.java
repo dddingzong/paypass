@@ -64,4 +64,9 @@ public class GeofenceService {
         return resultMap;
     }
 
+    @Transactional
+    public List<GeofenceLocation> findByMainId(String mainId){
+        return geofenceLocationRepository.findByMainId(mainId);
+    }
+
 }
