@@ -41,7 +41,7 @@ public class adminController {
     public ResponseEntity<List<GeofenceLocation>> getGeofenceLocations(@RequestBody Map<String, String> payload) { // 일단 dto를 사용하지 않고 Map으로 해결
 
         String mainId = payload.get("mainId");
-        log.info("mainId = "+ mainId +", 메인 알고리즘 테스트를 실행합니다.");
+        log.info("mainId = "+ mainId +", geofenceLocation data를 가져옵니다");
 
         List<GeofenceLocation> geofenceLocations = geofenceService.findByMainId(mainId);
 
