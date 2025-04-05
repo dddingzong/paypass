@@ -26,7 +26,9 @@ public class GeofenceController {
 
     @PostMapping("/userFenceIn")
     public ResponseEntity<Void> userGeofenceIn(@RequestBody UserGeofenceDto userGeofenceDto){
+        log.info("****************************************************************");
         log.info("사용자가 geofence에 접근했기 때문에 userGeofenceIn method를 실행합니다.");
+        log.info("****************************************************************");
 
         // mainId랑 stationNumber 받기
         String mainId = userGeofenceDto.getMainId();
@@ -59,7 +61,9 @@ public class GeofenceController {
 
     @PostMapping("/userFenceOut")
     public ResponseEntity<Void> userGeofenceOut(@RequestBody UserGeofenceDto userGeofenceDto){
+        log.info("****************************************************************");
         log.info("사용자가 geofence에서 이탈했기 때문에 userGeofenceOut method를 실행합니다.");
+        log.info("****************************************************************");
 
         // mainId랑 stationNumber 받기
         String mainId = userGeofenceDto.getMainId();
