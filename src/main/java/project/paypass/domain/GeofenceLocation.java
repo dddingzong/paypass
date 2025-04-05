@@ -9,13 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 public class GeofenceLocation {
 
-    @Override
-    public String toString() {
-        return "GeofenceLocation{" +
-                "stationNumber=" + stationNumber +
-                '}';
-    }
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
