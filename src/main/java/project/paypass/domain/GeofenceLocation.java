@@ -13,6 +13,9 @@ public class GeofenceLocation {
     public String toString() {
         return "GeofenceLocation{" +
                 "id=" + id +
+                ", mainId='" + mainId + '\'' +
+                ", fenceInTime=" + fenceInTime +
+                ", fenceOutTime=" + fenceOutTime +
                 ", stationNumber=" + stationNumber +
                 '}';
     }
@@ -73,6 +76,10 @@ public class GeofenceLocation {
 
     public LocalDateTime getFenceInTime() {
         return this.fenceInTime;
+    }
+
+    public String getMainId(){
+        return this.mainId;
     }
 
     public static GeofenceLocation createGeofenceLocationEntityForTest(Long id, String mainId, LocalDateTime fenceInTime, LocalDateTime fenceOutTime, Long stationNumber, String busInfo){
