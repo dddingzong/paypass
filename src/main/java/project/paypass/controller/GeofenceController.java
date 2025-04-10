@@ -46,19 +46,6 @@ public class GeofenceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/algorithmStart")
-    public void algorithmStart(@RequestBody Map<String, String> payload){ // 일단 dto를 사용하지 않고 Map으로 해결
-
-        String mainId = payload.get("mainId");
-        log.info("메인 알고리즘을 실행합니다.");
-
-        Map<List<GeofenceLocation>, List<String>> resultMap = geofenceService.startAlgorithm(mainId);
-
-        // 이후 데이터 저장
-        logService.saveLogData(mainId, resultMap);
-    }
-
-
     @PostMapping("/userFenceOut")
     public ResponseEntity<Void> userGeofenceOut(@RequestBody UserGeofenceDto userGeofenceDto){
         log.info("****************************************************************");
