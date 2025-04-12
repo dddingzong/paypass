@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import project.paypass.domain.GeofenceLocation;
 import project.paypass.repository.GeofenceLocationRepository;
 
@@ -75,6 +74,11 @@ public class GeofenceService {
     @Transactional
     public GeofenceLocation createGeofenceLocation(String mainId, Long stationNumber, String busInfo){
         return new GeofenceLocation(mainId,stationNumber,busInfo);
+    }
+
+    @Transactional
+    public GeofenceLocation userFenceOutWithoutEntity(String mainId, Long stationNumber, String busInfo, LocalDateTime userFenceOut){
+        return new GeofenceLocation(mainId,stationNumber,busInfo,userFenceOut);
     }
 
     @Transactional
