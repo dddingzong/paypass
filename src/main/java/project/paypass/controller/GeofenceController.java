@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import project.paypass.domain.GeofenceLocation;
+import project.paypass.domain.dto.LogDto;
 import project.paypass.domain.dto.UserGeofenceDto;
 import project.paypass.service.GeofenceService;
 import project.paypass.service.LogService;
@@ -15,6 +16,7 @@ import project.paypass.service.StationService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -76,6 +78,21 @@ public class GeofenceController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/getCurrentGeofence")
+    public ResponseEntity<List<String>> checkCurrentGeofence(@RequestBody Map<String, String> request){
+        String mainId = request.get("mainId");
+
+        // mainId를 활용해서 fenceInTime은 존재하고 fenceOutTime은 null 값인 stationNumber 확인하기
+        List<GeofenceLocation> geofenceLocations = geofenceService.findByMainId(mainId);
+
+        List<String> activeStationNumbers = geofenceLocations.stream()
+                .filter(geofenceLocation -> geofenceLocation.getFenceOutTime() == null) // 아직 나가지 않은 상태만 필터링
+                .map(geofenceLocation -> String.valueOf(geofenceLocation.getStationNumber())) // stationNumber를 문자열로 변환
+                .toList();
+
+        return ResponseEntity.ok(activeStationNumbers);
     }
 
     private void updateFenceOutTimeNoEntity(String mainId, Long stationNumber){
