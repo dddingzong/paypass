@@ -12,6 +12,7 @@ import project.paypass.service.GeofenceService;
 import project.paypass.service.LogService;
 import project.paypass.service.StationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -59,9 +60,9 @@ public class GeofenceController {
         // mainId와 stationNumber를 활용해서 해당 entity 가져오기
         List<GeofenceLocation> userOutStations = geofenceService.findByMainIdAndStationNumber(mainId, stationNumber);
 
-        // entity가 존재하지 않으면 해당 데이터는 삭제한다.
+        // entity가 존재하지 않으면 2분 전 fenceIn을 한다고 가정한다.
         if (userOutStations.isEmpty()){
-            updateFenceOutTimeNoEntity();
+            updateFenceOutTimeNoEntity(mainId, stationNumber);
         }
 
         // entity가 하나라면 해당 entity의 fenceOutTime 추가
@@ -77,9 +78,18 @@ public class GeofenceController {
         return ResponseEntity.ok().build();
     }
 
+    private void updateFenceOutTimeNoEntity(String mainId, Long stationNumber){
+        log.info("stationNumber에 부합하는 entity가 존재하지 않기 때문에 2분 전 fenceIn을 가정하고 entity를 생성합니다.");
 
-    private void updateFenceOutTimeNoEntity(){
-        log.info("stationNumber에 부합하는 entity가 존재하지 않기 때문에 메서드를 종료합니다.");
+        // stationNumber 활용해서 busInfo 가져오기
+        String busInfo = stationService.findBusInfoByStationNumber(stationNumber);
+
+        // geofenceLocation entity 생성
+        GeofenceLocation geofenceLocation = geofenceService.userFenceOutWithoutEntity(mainId, stationNumber, busInfo, LocalDateTime.now());
+
+        geofenceService.save(geofenceLocation);
+        log.info("geofenceLocation 데이터를 생성 후 저장했습니다. (entity 없이 fenceOut한 경우)");
+        log.info("geofenceLocation: {}", geofenceLocation);
     }
 
     private void updateFenceOutTimeOneEntity(List<GeofenceLocation> userOutStations){
