@@ -208,7 +208,7 @@ public class AverageTimeAlgorithmService {
     }
 
     private List<Long> checkAverageTime(List<Long> sequenceList, List<Map<String, LocalDateTime>> timeList, List<BusTime> busTimeList) {
-        final int timeGap = 15;
+        final int timeGap = 5;
         ArrayList<Long> checkedList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
