@@ -38,6 +38,19 @@ public class adminController {
         return ResponseEntity.ok(resultMap);
     }
 
+    @PostMapping("/test/startTrigger")
+    public ResponseEntity<Map<List<GeofenceLocation>, List<String>>> startTrigger(@RequestBody Map<String, String> payload) { // 일단 dto를 사용하지 않고 Map으로 해결
+
+        String mainId = payload.get("mainId");
+        log.info("mainId = "+ mainId +", 메인 알고리즘 실행합니다.");
+
+        geofenceService.algorithmStart(mainId);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
     @PostMapping("/test/geofenceLocations")
     public ResponseEntity<List<GeofenceLocation>> getGeofenceLocations(@RequestBody Map<String, String> payload) { // 일단 dto를 사용하지 않고 Map으로 해결
 
