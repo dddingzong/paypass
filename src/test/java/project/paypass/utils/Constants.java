@@ -46,29 +46,26 @@ public class Constants {
     ));
 
     public static final Map<String, List<Long>> testCase1_AverageAlgorithm = new TreeMap<>(Map.ofEntries(
-            Map.entry("100100057_1", List.of(27L, 28L, 29L)),
+            Map.entry("100100057_1", List.of(28L, 29L)),
             Map.entry("100100057_2", List.of(31L, 32L, 33L, 34L)),
             Map.entry("100100083_1", List.of(48L, 49L, 50L)),
-            Map.entry("100100093_1", List.of(46L, 47L, 48L)),
-            Map.entry("100100093_2", List.of(50L, 51L, 52L, 53L)),
-            Map.entry("100100234_1", List.of(61L, 62L, 63L)),
+            Map.entry("100100093_1", List.of(47L, 48L)),
+            Map.entry("100100093_2", List.of(52L, 53L)),
+            Map.entry("100100234_1", List.of(62L, 63L)),
             Map.entry("100100237_1", List.of(96L, 97L, 98L)),
-            Map.entry("100100260_1", List.of(46L, 47L)),
             Map.entry("100100392_1", List.of(60L, 61L, 62L)),
             Map.entry("100100454_1", List.of(37L, 38L, 39L)),
-            Map.entry("100100454_2", List.of(41L, 42L, 43L, 44L)),
+            Map.entry("100100454_2", List.of(43L, 44L)),
             Map.entry("100100579_1", List.of(43L, 44L, 45L)),
             Map.entry("113000002_1", List.of(56L, 57L, 58L)),
-            Map.entry("113000002_2", List.of(60L, 61L)),
-            Map.entry("114000002_1", List.of(80L, 81L, 82L)),
-            Map.entry("114000002_2", List.of(84L, 85L, 86L, 87L))
+            Map.entry("114000002_1", List.of(84L, 85L, 86L, 87L))
     ));
 
     public static final Map<List<GeofenceLocation>, List<String>> testCase1_resultMap = Map.ofEntries(
             Map.entry(List.of(test1_geofenceLocation1, test1_geofenceLocation2, test1_geofenceLocation3),
-                    List.of("100100057", "100100083", "100100093", "100100234", "100100237", "100100392", "100100454", "100100579", "113000002", "114000002")),
+                    List.of("100100083", "100100237", "100100392", "100100454", "100100579", "113000002")),
             Map.entry(List.of(test1_geofenceLocation5, test1_geofenceLocation6, test1_geofenceLocation7, test1_geofenceLocation8),
-                    List.of("100100057", "100100093", "100100454", "114000002"))
+                    List.of("100100057", "114000002"))
             );
 
     // 2번 테스트 케이스
@@ -106,14 +103,20 @@ public class Constants {
             Map.entry("116000002_1", List.of(38L, 39L))
     ));
 
+    public static final Map<String, List<Long>> testCase2_AverageAlgorithm = new TreeMap<>(Map.ofEntries(
+            Map.entry("100100298_1", List.of(61L, 62L)),
+            Map.entry("100100312_1", List.of(63L, 64L)),
+            Map.entry("100100313_1", List.of(50L, 51L)),
+            Map.entry("100100451_1", List.of(12L, 13L)),
+            Map.entry("100100601_1", List.of(43L, 44L))
+    ));
+
     public static final Map<List<GeofenceLocation>, List<String>> testCase2_resultMap = Map.ofEntries(
-            Map.entry(List.of(test2_geofenceLocation1, test2_geofenceLocation2, test2_geofenceLocation3),
-                    List.of("100100298")),
-            Map.entry(List.of(test2_geofenceLocation4, test2_geofenceLocation5, test2_geofenceLocation6),
-                    List.of("100100298", "100100453")),
-            Map.entry(List.of(test2_geofenceLocation7, test2_geofenceLocation8),
-                    List.of("100100298")),
-            Map.entry(List.of(test2_geofenceLocation9, test2_geofenceLocation10, test2_geofenceLocation11),
-                    List.of("100100298", "100100312", "100100313"))
+            Map.entry(List.of(test2_geofenceLocation2, test2_geofenceLocation3),
+                    List.of("100100451","100100601")),
+            Map.entry(List.of(test2_geofenceLocation9, test2_geofenceLocation10),
+                    List.of("100100298", "100100313")),
+            Map.entry(List.of(test2_geofenceLocation10, test2_geofenceLocation11),
+                    List.of("100100312"))
     );
 }

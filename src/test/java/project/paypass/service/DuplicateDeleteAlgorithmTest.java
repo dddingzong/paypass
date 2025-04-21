@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static project.paypass.utils.Constants.*;
+import static project.paypass.utils.Constants.testCase2_AverageAlgorithm;
 
 @SpringBootTest
 @Transactional
@@ -34,7 +35,7 @@ class DuplicateDeleteAlgorithmTest {
     @DisplayName("테스트_데이터_2번_중복제거알고리즘")
     void algorithmStartTestTwo() {
         // when
-        Map<List<GeofenceLocation>, List<String>> resultMap = duplicateDeleteAlgorithm.algorithmStart(testCase2_basicAlgorithm, testCase2_GeofenceLocation);
+        Map<List<GeofenceLocation>, List<String>> resultMap = duplicateDeleteAlgorithm.algorithmStart(testCase2_AverageAlgorithm, testCase2_GeofenceLocation);
         // then
         Assertions.assertThat(resultMap).isEqualTo(testCase2_resultMap);
     }

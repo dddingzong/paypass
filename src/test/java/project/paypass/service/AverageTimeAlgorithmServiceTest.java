@@ -36,6 +36,6 @@ class AverageTimeAlgorithmServiceTest {
         // when
         Map<String, List<Long>> averageMap = averageTimeAlgorithmService.algorithmStart(testCase2_basicAlgorithm, testCase2_GeofenceLocation);
         // then
-        Assertions.assertThat(averageMap).isEqualTo(testCase2_basicAlgorithm);
+        Assertions.assertThat(averageMap).isEqualTo(testCase2_AverageAlgorithm);
     }
 }
