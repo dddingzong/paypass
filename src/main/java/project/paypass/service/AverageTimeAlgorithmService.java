@@ -142,7 +142,15 @@ public class AverageTimeAlgorithmService {
         // ex) sequenceList = [1,2,3,7,8,23,24,1,3] -> continuousSequenceList = [[1,2,3], [7,8], [23, 24]]
         // 연속되는 부분이 있다면 해당 sequence 값을 continuousSequenceList 리스트에 넣기
 
+        System.out.println("확인용");
+        System.out.println("sequenceList = " + sequenceList);
+
+        if (sequenceList.isEmpty()){
+            return continuousSequenceList;
+        }
         List<Long> continuousSequences = new ArrayList<>(List.of(sequenceList.get(0)));
+
+
 
         for (int i = 1; i < sequenceList.size(); i++) {
             Long currentSequence = sequenceList.get(i);
@@ -236,10 +244,10 @@ public class AverageTimeAlgorithmService {
 
                 long dataTime = Duration.between(fenceOutTime,fenceInTime).toMinutes();
 
-                log.info(intSequence + "체크: 다음 정거장과의 평균 이동 시간: " + realTime + " 실제 이동 시간: " + dataTime);
+                log.info(intSequence + "번: 다음 정거장과의 평균 이동 시간: " + realTime + " 실제 이동 시간: " + dataTime);
 
-                // 차이가 15분 이하일 경우 버스를 탑승했다고 판별
-                if (Math.abs(realTime - dataTime) < timeGap ) {
+                // 차이가 5분 이하일 경우 버스를 탑승했다고 판별
+                if (Math.abs(realTime - dataTime) <= timeGap ) {
                     checkedList.add(sequence);
                 }
                 continue;
@@ -271,12 +279,12 @@ public class AverageTimeAlgorithmService {
                 long previousDataTime = Duration.between(previousFenceOutTime,previousFenceInTime).toMinutes();
                 long nextDataTime = Duration.between(nextFenceOutTime,nextFenceInTime).toMinutes();
 
-                log.info(intSequence + "체크: 이전 정거장과의 평균 이동 시간: " + previousRealTime + " 실제 이동 시간: " + previousDataTime);
-                log.info(intSequence + "체크: 다음 정거장과의 평균 이동 시간: " + nextRealTime + " 실제 이동 시간: " + nextDataTime);
+                log.info(intSequence + "번: 이전 정거장과의 평균 이동 시간: " + previousRealTime + " 실제 이동 시간: " + previousDataTime);
+                log.info(intSequence + "번: 다음 정거장과의 평균 이동 시간: " + nextRealTime + " 실제 이동 시간: " + nextDataTime);
 
 
-                // 차이가 15분 이하일 경우 버스를 탑승했다고 판별 (둘 중 하나만 만족해도 탑승했다고 판별)
-                if (Math.abs(nextRealTime - nextDataTime) < timeGap || Math.abs(previousRealTime - previousDataTime) < timeGap) {
+                // 차이가 5분 이하일 경우 버스를 탑승했다고 판별 (둘 중 하나만 만족해도 탑승했다고 판별)
+                if (Math.abs(nextRealTime - nextDataTime) <= timeGap || Math.abs(previousRealTime - previousDataTime) <= timeGap) {
                     checkedList.add(sequence);
                 }
                 continue;
@@ -299,10 +307,10 @@ public class AverageTimeAlgorithmService {
 
                 long dataTime = Duration.between(fenceOutTime,fenceInTime).toMinutes();
 
-                log.info(intSequence + "체크: 이전 정거장과의 평균 이동 시간: " + realTime + " 실제 이동 시간: " + dataTime);
+                log.info(intSequence + "번: 이전 정거장과의 평균 이동 시간: " + realTime + " 실제 이동 시간: " + dataTime);
 
-                // 차이가 15분 이하일 경우 버스를 탑승했다고 판별
-                if (Math.abs(realTime - dataTime) < timeGap ) {
+                // 차이가 5분 이하일 경우 버스를 탑승했다고 판별
+                if (Math.abs(realTime - dataTime) <= timeGap ) {
                     checkedList.add(sequence);
                 }
                 continue;
