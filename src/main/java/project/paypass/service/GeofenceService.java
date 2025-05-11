@@ -26,7 +26,6 @@ public class GeofenceService {
 
 
     @Transactional
-    @Scheduled(cron = "0 * * * * *")
     public void algorithmTrigger(){
         log.info("algorithmTrigger가 작동합니다.");
         // 모든 유저에 대한 가장 최근 데이터를 가져오기
