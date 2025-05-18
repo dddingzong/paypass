@@ -10,8 +10,18 @@
 ### 주요 기능
 * 사용자 대중교통 승차 및 하차 시 자동 결제
 * 실시간 이용 내역 확인 및 관리
+* 교통 약자를 위한 보호자 대신 결제 서비스
 
 <hr>
 
 ### 시스템 아키텍처 
 <img src="https://github.com/user-attachments/assets/8891d89e-3342-4c0a-89cb-a04cc10f6daf" style="display: block; margin: 0 auto; width: 60%;">
+
+* 백엔드: Java & Spring boot
+* 프론트엔드: Flutter
+* Server: AWS EC2
+* DataBase: MySQL
+
+<hr>
+
+### 5.21 추가사항
