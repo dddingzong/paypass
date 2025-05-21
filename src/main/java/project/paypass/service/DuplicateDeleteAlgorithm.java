@@ -161,9 +161,12 @@ public class DuplicateDeleteAlgorithm {
             List<Long> stationNumberList = makeStationNumberList(geofenceLocationList);
             List<Long> idList = makeIdList(geofenceLocationList);
 
+
             List<String> routeIdList = geofenceLocationMap.keySet().stream()
                     .sorted()
                     .collect(Collectors.toList());
+
+            System.out.println("routeIdList = " + routeIdList);
 
             for (String routeIdInRouteIdList : routeIdList){
                 int count = 1;
@@ -171,11 +174,21 @@ public class DuplicateDeleteAlgorithm {
                 while (true) {
                     String routeIdInStationMap = routeIdInRouteIdList + "_" + count;
 
+                    System.out.print("routeIdInStationMap = " + routeIdInStationMap);
+
+                    if (stationMap.containsKey(routeIdInStationMap)) {
+                        System.out.println("-> 생성될 routeId 입니다.");
+                    }
+
                     if (!stationMap.containsKey(routeIdInStationMap)) {
+                        System.out.println("-> 삭제 예정 routeId 입니다");
                         break;
                     }
 
                     List<Long> stationNumberListInStationMap = stationMap.get(routeIdInStationMap);
+
+                    System.out.println("stationNumberListInStationMap = " + stationNumberListInStationMap);
+                    System.out.println("stationNumberList = " + stationNumberList);
 
                     if (routeIdInStationMap.matches(pattern)) {
                         // 있다면 continuousGeofenceLocationMap에 추가 + stationNumberList에서 값 삭제
@@ -214,6 +227,7 @@ public class DuplicateDeleteAlgorithm {
 
         }
         // 중복된 부분 stationMap에서 삭제
+        System.out.println("deleteKeyList = " + deleteKeyList);
         for (String routeId : deleteKeyList) {
             stationMap.remove(routeId);
         }
